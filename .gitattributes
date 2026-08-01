@@ -1,0 +1,8 @@
+# Normalize line endings to LF across platforms.
+* text=auto eol=lf
+
+# Binary / generated
+*.png binary
+*.jpg binary
+*.ico binary
+package-lock.json -diff

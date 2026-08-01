@@ -1,0 +1,20 @@
+{
+  "name": "charter-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Charter — treasury operations layer for Stellar-based organizations",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:sdk": "npm run build --workspace @charter/sdk",
+    "build:web": "npm run build --workspace @charter/web",
+    "dev:web": "npm run dev --workspace @charter/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
