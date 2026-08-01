@@ -14,7 +14,7 @@
     "declaration": true,
     "noEmit": true,
     "verbatimModuleSyntax": true,
-    "types": []
+    "types": ["node"]
   },
   "include": ["src"]
 }
