@@ -24,6 +24,19 @@ export interface Org {
   createdLedger: number;
 }
 
+/**
+ * A budget category within a treasury. `cap` and `spent` are decimal strings
+ * (raw i128 token amounts) — format them with a bigint-safe helper, never a
+ * float.
+ */
+export interface Category {
+  categoryId: number;
+  name: string;
+  cap: string;
+  spent: string;
+  active: boolean;
+}
+
 /** Raised when the indexer returns a non-2xx response or is unreachable. */
 export class IndexerError extends Error {
   /** HTTP status, or 0 when the request never completed (network/DNS). */
@@ -71,4 +84,25 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 export async function fetchOrgs(signal?: AbortSignal): Promise<Org[]> {
   const { orgs } = await get<{ orgs: Org[] }>('/orgs', signal);
   return orgs;
+}
+
+/**
+ * Fetches one organization by its treasury address. A 404 surfaces as an
+ * {@link IndexerError} with status 404, which callers distinguish from a
+ * transport failure (status 0) to show a "not found" state.
+ */
+export async function fetchOrg(treasury: string, signal?: AbortSignal): Promise<Org> {
+  return get<Org>(`/orgs/${encodeURIComponent(treasury)}`, signal);
+}
+
+/** Lists a treasury's budget categories, in category-id order. */
+export async function fetchCategories(
+  treasury: string,
+  signal?: AbortSignal,
+): Promise<Category[]> {
+  const { categories } = await get<{ categories: Category[] }>(
+    `/orgs/${encodeURIComponent(treasury)}/categories`,
+    signal,
+  );
+  return categories;
 }
