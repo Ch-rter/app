@@ -15,6 +15,13 @@ body {
   @apply bg-canvas text-ink antialiased;
 }
 
+/* Honour reduced-motion: drop pulse to a static tint. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
+  }
+}
+
 /* Thin, unobtrusive scrollbars that match the dark canvas. */
 * {
   scrollbar-width: thin;
