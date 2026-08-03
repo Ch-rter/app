@@ -5,3 +5,4 @@ export * from './xdr.js';
 export * from './rpc.js';
 export * from './types.js';
 export * as treasury from './contracts/treasury.js';
+export * as factory from './contracts/factory.js';
