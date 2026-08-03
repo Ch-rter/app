@@ -21,6 +21,7 @@ import { factoryContractId } from '../lib/env';
 import { signXdr } from '../lib/wallet-kit';
 import { useWalletStore } from '../store/wallet';
 import { cn } from '../lib/format';
+import { Label, Hint, Input } from './form';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,57 +32,6 @@ interface FormState {
   token: string;
   approvers: string[];
   threshold: number;
-}
-
-// ---------------------------------------------------------------------------
-// Field primitives
-// ---------------------------------------------------------------------------
-
-function Label({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
-  return (
-    <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
-      {children}
-    </label>
-  );
-}
-
-function Hint({ children }: { children: React.ReactNode }) {
-  return <p className="mt-1 text-xs text-ink-faint">{children}</p>;
-}
-
-function Input({
-  id,
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  mono,
-}: {
-  id?: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  mono?: boolean;
-}) {
-  return (
-    <input
-      id={id}
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      disabled={disabled}
-      className={cn(
-        'mt-1.5 block w-full rounded-lg border border-line bg-canvas-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint',
-        'transition-colors duration-150',
-        'hover:border-accent-muted',
-        'focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        mono && 'font-mono',
-      )}
-    />
-  );
 }
 
 // ---------------------------------------------------------------------------

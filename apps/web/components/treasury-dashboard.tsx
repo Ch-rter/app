@@ -15,12 +15,17 @@
  * view is read-only.
  */
 import Link from 'next/link';
+import { useState } from 'react';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
 import { orgQuery, categoriesQuery, balanceQuery } from '../lib/queries';
 import { formatAmount, cn } from '../lib/format';
 import type { Category, Org } from '../lib/indexer';
+import { useWalletStore } from '../store/wallet';
 import { CopyAddress } from './copy-address';
+import { CategoryFormModal } from './category-form-modal';
+import { CategoryAdminActions } from './category-admin-actions';
+import { PrimaryButton } from './form';
 import { Skeleton, EmptyState, ErrorState } from './states';
 
 // ---------------------------------------------------------------------------
@@ -60,6 +65,14 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const balance = useQuery(balanceQuery(treasury));
   const categories = useQuery(categoriesQuery(treasury));
 
+  // The connected wallet is the admin only when it exactly matches the org's
+  // on-chain admin address. Admin-only affordances (create/edit/pause) are
+  // gated on this — the contract enforces it regardless, but the UI shouldn't
+  // offer actions that will be rejected.
+  const address = useWalletStore((s) => s.address);
+  const adminAddress = org.data?.adminAddress ?? null;
+  const isAdmin = address !== null && adminAddress !== null && address === adminAddress;
+
   return (
     <div className="space-y-8">
       <nav>
@@ -78,7 +91,12 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
 
       <BalancePanel balance={balance} />
 
-      <CategoriesSection categories={categories} />
+      <CategoriesSection
+        categories={categories}
+        treasuryId={treasury}
+        admin={adminAddress}
+        isAdmin={isAdmin}
+      />
     </div>
   );
 }
@@ -191,13 +209,30 @@ function BalancePanel({
 
 function CategoriesSection({
   categories,
+  treasuryId,
+  admin,
+  isAdmin,
 }: {
   categories: UseQueryResult<Category[]>;
+  treasuryId: string;
+  admin: string | null;
+  isAdmin: boolean;
 }) {
+  const [creating, setCreating] = useState(false);
+  const canManage = isAdmin && admin !== null;
+
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-ink">Budget categories</h2>
+        {canManage && (
+          <PrimaryButton onClick={() => setCreating(true)}>
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+            New category
+          </PrimaryButton>
+        )}
       </div>
 
       {categories.isPending && <CategoriesSkeleton />}
@@ -214,21 +249,52 @@ function CategoriesSection({
         <EmptyState
           title="No categories yet"
           body="Budget categories cap how much each part of the org can disburse. The admin creates them; requests draw against them."
+          action={
+            canManage ? (
+              <PrimaryButton onClick={() => setCreating(true)}>Create category</PrimaryButton>
+            ) : undefined
+          }
         />
       )}
 
       {categories.isSuccess && categories.data.length > 0 && (
         <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
           {categories.data.map((category) => (
-            <CategoryRow key={category.categoryId} category={category} />
+            <CategoryRow
+              key={category.categoryId}
+              category={category}
+              treasuryId={treasuryId}
+              admin={admin}
+              canManage={canManage}
+            />
           ))}
         </ul>
+      )}
+
+      {canManage && (
+        <CategoryFormModal
+          open={creating}
+          onClose={() => setCreating(false)}
+          treasuryId={treasuryId}
+          admin={admin}
+          mode={{ kind: 'create' }}
+        />
       )}
     </section>
   );
 }
 
-function CategoryRow({ category }: { category: Category }) {
+function CategoryRow({
+  category,
+  treasuryId,
+  admin,
+  canManage,
+}: {
+  category: Category;
+  treasuryId: string;
+  admin: string | null;
+  canManage: boolean;
+}) {
   const pct = usagePercent(category.cap, category.spent);
   const nearCap = pct >= 90;
 
@@ -243,12 +309,17 @@ function CategoryRow({ category }: { category: Category }) {
             </span>
           )}
         </div>
-        <p className="shrink-0 font-mono text-xs tabular-nums text-ink-muted">
-          <span className={cn(nearCap ? 'text-warn' : 'text-ink')}>
-            {formatAmount(category.spent)}
-          </span>
-          <span className="text-ink-faint"> / {formatAmount(category.cap)}</span>
-        </p>
+        <div className="flex shrink-0 items-center gap-3">
+          <p className="font-mono text-xs tabular-nums text-ink-muted">
+            <span className={cn(nearCap ? 'text-warn' : 'text-ink')}>
+              {formatAmount(category.spent)}
+            </span>
+            <span className="text-ink-faint"> / {formatAmount(category.cap)}</span>
+          </p>
+          {canManage && admin !== null && (
+            <CategoryAdminActions treasuryId={treasuryId} admin={admin} category={category} />
+          )}
+        </div>
       </div>
 
       <div className="mt-2.5 flex items-center gap-3">
