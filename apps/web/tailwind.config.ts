@@ -33,6 +33,17 @@ const config: Config = {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
+      // Semantic stacking order — layers are named by role so nothing reaches
+      // for an arbitrary 999. Ascending: base content → sticky chrome →
+      // overlays → toasts.
+      zIndex: {
+        dropdown: '10',
+        sticky: '20',
+        'modal-backdrop': '30',
+        modal: '40',
+        toast: '50',
+        tooltip: '60',
+      },
     },
   },
   plugins: [],
