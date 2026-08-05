@@ -1,0 +1,72 @@
+name: CI
+
+# Lint, typecheck, and build every push and pull request against main.
+# Two independent jobs — the TypeScript web/SDK workspace and the Go indexer —
+# run in parallel so a failure in one is isolated and fast to spot.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A newer push to the same ref cancels the in-flight run for that ref.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web (lint · typecheck · build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Reproducible install from the committed lockfile across the workspace.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # The web build reads only NEXT_PUBLIC_* config; the SDK's RPC layer reads
+      # its RPC URL and network passphrase lazily. Supply harmless testnet values
+      # so the production build is deterministic without secrets.
+      - name: Build web
+        run: npm run build:web
+        env:
+          NEXT_PUBLIC_SOROBAN_RPC_URL: https://soroban-testnet.stellar.org
+          NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
+          NEXT_PUBLIC_INDEXER_API_URL: https://indexer.example.com
+
+  indexer:
+    name: Indexer (vet · build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: indexer
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache-dependency-path: indexer/go.sum
+
+      - name: Download modules
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build ./...
