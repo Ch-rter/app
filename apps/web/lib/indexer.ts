@@ -97,7 +97,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
       headers: { accept: 'application/json' },
       signal,
     });
-  } catch (cause) {
+  } catch {
     throw new IndexerError(
       'Could not reach the indexer. Check your connection and try again.',
       0,

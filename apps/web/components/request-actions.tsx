@@ -13,7 +13,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { treasury } from '@charter/sdk';
 
 import { signXdr } from '../lib/wallet-kit';
-import { qk } from '../lib/queries';
 import { cn } from '../lib/format';
 
 export function RequestActions({

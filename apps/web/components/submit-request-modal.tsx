@@ -22,7 +22,6 @@ import { StrKey } from '@stellar/stellar-sdk';
 import { treasury } from '@charter/sdk';
 
 import { signXdr } from '../lib/wallet-kit';
-import { qk } from '../lib/queries';
 import { parseAmount, AmountParseError, formatAmount, cn } from '../lib/format';
 import type { Category } from '../lib/indexer';
 import { Modal } from './modal';
