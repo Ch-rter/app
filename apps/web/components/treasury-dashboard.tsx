@@ -24,6 +24,8 @@ import {
   categoriesQuery,
   balanceQuery,
   requestsQuery,
+  thresholdQuery,
+  approversQuery,
 } from '../lib/queries';
 import { formatAmount, truncateAddress, cn } from '../lib/format';
 import type { Category, Org, Request } from '../lib/indexer';
@@ -33,6 +35,8 @@ import { CategoryFormModal } from './category-form-modal';
 import { CategoryAdminActions } from './category-admin-actions';
 import { SubmitRequestModal } from './submit-request-modal';
 import { RequestStatusBadge } from './request-status-badge';
+import { RequestActions } from './request-actions';
+import { ApprovalProgress } from './approval-progress';
 import { PrimaryButton } from './form';
 import { Skeleton, EmptyState, ErrorState } from './states';
 
@@ -73,6 +77,8 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const balance = useQuery(balanceQuery(treasury));
   const categories = useQuery(categoriesQuery(treasury));
   const requests = useQuery(requestsQuery(treasury));
+  const threshold = useQuery(thresholdQuery(treasury));
+  const approvers = useQuery(approversQuery(treasury));
 
   // The connected wallet is the admin only when it exactly matches the org's
   // on-chain admin address. Admin-only affordances (create/edit/pause) are
@@ -112,6 +118,8 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
         categories={categories}
         treasuryId={treasury}
         requester={address}
+        threshold={threshold.data ?? null}
+        approvers={approvers.data ?? []}
       />
     </div>
   );
@@ -388,11 +396,15 @@ function RequestsSection({
   categories,
   treasuryId,
   requester,
+  threshold,
+  approvers,
 }: {
   requests: UseQueryResult<Request[]>;
   categories: UseQueryResult<Category[]>;
   treasuryId: string;
   requester: string | null;
+  threshold: number | null;
+  approvers: string[];
 }) {
   const [creating, setCreating] = useState(false);
 
@@ -401,6 +413,10 @@ function RequestsSection({
   // contract would reject the call regardless.
   const activeCategories = (categories.data ?? []).filter((c) => c.active);
   const canSubmit = requester !== null && activeCategories.length > 0;
+
+  // Whether the connected wallet is an approver on this treasury drives which
+  // per-request actions (approve/reject) are offered.
+  const isApprover = requester !== null && approvers.includes(requester);
 
   // Category names for row labels, resolved from the categories query.
   const categoryName = (categoryId: number): string =>
@@ -449,6 +465,10 @@ function RequestsSection({
               key={request.requestId}
               request={request}
               categoryName={categoryName(request.categoryId)}
+              treasuryId={treasuryId}
+              walletAddress={requester}
+              isApprover={isApprover}
+              threshold={threshold}
             />
           ))}
         </ul>
@@ -470,17 +490,30 @@ function RequestsSection({
 function RequestRow({
   request,
   categoryName,
+  treasuryId,
+  walletAddress,
+  isApprover,
+  threshold,
 }: {
   request: Request;
   categoryName: string;
+  treasuryId: string;
+  walletAddress: string | null;
+  isApprover: boolean;
+  threshold: number | null;
 }) {
-  const approvalCount = request.approvals.length;
+  const isPending = request.status === 'Pending';
 
   return (
     <li className="flex items-center justify-between gap-4 px-5 py-4">
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2.5">
-          <span className="truncate text-sm font-medium text-ink">{categoryName}</span>
+          <Link
+            href={`/org/${treasuryId}/requests/${request.requestId}`}
+            className="truncate rounded text-sm font-medium text-ink transition-colors duration-150 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            {categoryName}
+          </Link>
           <RequestStatusBadge status={request.status} />
         </div>
         <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-ink-muted">
@@ -496,14 +529,25 @@ function RequestRow({
         </p>
       </div>
 
-      <div className="flex shrink-0 flex-col items-end gap-1">
-        <span className="font-mono text-sm font-medium tabular-nums text-ink">
-          {formatAmount(request.amount)}
-        </span>
-        {request.status === 'Pending' && (
-          <span className="text-xs text-ink-faint">
-            {approvalCount} approval{approvalCount === 1 ? '' : 's'}
+      <div className="flex shrink-0 items-center gap-4">
+        <div className="flex flex-col items-end gap-1">
+          <span className="font-mono text-sm font-medium tabular-nums text-ink">
+            {formatAmount(request.amount)}
           </span>
+          {isPending && (
+            <ApprovalProgress approvals={request.approvals.length} threshold={threshold} />
+          )}
+        </div>
+
+        {isPending && walletAddress !== null && (
+          <RequestActions
+            treasuryId={treasuryId}
+            requestId={request.requestId}
+            requester={request.requester}
+            approvals={request.approvals}
+            walletAddress={walletAddress}
+            isApprover={isApprover}
+          />
         )}
       </div>
     </li>
