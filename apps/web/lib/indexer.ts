@@ -37,6 +37,40 @@ export interface Category {
   active: boolean;
 }
 
+/**
+ * The lifecycle of a disbursement request. Mirrors the indexer's status strings
+ * exactly (the contract's own state machine): a request is `Pending` until it
+ * either gathers enough approvals and executes, is rejected by an approver, or
+ * is cancelled by its requester.
+ */
+export type RequestStatus = 'Pending' | 'Executed' | 'Rejected' | 'Cancelled';
+
+/** The set of statuses the indexer accepts as a `?status=` filter. */
+export const REQUEST_STATUSES: readonly RequestStatus[] = [
+  'Pending',
+  'Executed',
+  'Rejected',
+  'Cancelled',
+];
+
+/**
+ * A disbursement request drawn against a category. `amount` is a decimal string
+ * (raw i128 token amount) — format it with a bigint-safe helper, never a float.
+ * `approvals` lists the addresses that have approved so far; progress toward the
+ * treasury's threshold is derived from its length.
+ */
+export interface Request {
+  requestId: number;
+  categoryId: number;
+  recipient: string;
+  amount: string;
+  memo: string;
+  requester: string;
+  status: RequestStatus;
+  createdLedger: number;
+  approvals: string[];
+}
+
 /** Raised when the indexer returns a non-2xx response or is unreachable. */
 export class IndexerError extends Error {
   /** HTTP status, or 0 when the request never completed (network/DNS). */
@@ -105,4 +139,38 @@ export async function fetchCategories(
     signal,
   );
   return categories;
+}
+
+/**
+ * Lists a treasury's disbursement requests, newest first. An optional status
+ * narrows the result to one lifecycle stage; omit it for every request. The
+ * status is a typed {@link RequestStatus}, so callers cannot send a filter the
+ * indexer would reject with a 400.
+ */
+export async function fetchRequests(
+  treasury: string,
+  status?: RequestStatus,
+  signal?: AbortSignal,
+): Promise<Request[]> {
+  const query = status ? `?status=${encodeURIComponent(status)}` : '';
+  const { requests } = await get<{ requests: Request[] }>(
+    `/orgs/${encodeURIComponent(treasury)}/requests${query}`,
+    signal,
+  );
+  return requests;
+}
+
+/**
+ * Fetches one request by its id. A 404 surfaces as an {@link IndexerError} with
+ * status 404, which callers distinguish from a transport failure (status 0).
+ */
+export async function fetchRequest(
+  treasury: string,
+  requestId: number,
+  signal?: AbortSignal,
+): Promise<Request> {
+  return get<Request>(
+    `/orgs/${encodeURIComponent(treasury)}/requests/${requestId}`,
+    signal,
+  );
 }

@@ -8,7 +8,14 @@
 import { queryOptions } from '@tanstack/react-query';
 import { treasury } from '@charter/sdk';
 
-import { fetchOrg, fetchOrgs, fetchCategories } from './indexer';
+import {
+  fetchOrg,
+  fetchOrgs,
+  fetchCategories,
+  fetchRequests,
+  fetchRequest,
+  type RequestStatus,
+} from './indexer';
 
 /** Namespaced query keys, so `invalidateQueries({ queryKey: qk.orgs() })` is unambiguous. */
 export const qk = {
@@ -16,6 +23,12 @@ export const qk = {
   org: (treasuryAddress: string) => ['org', treasuryAddress] as const,
   categories: (treasuryAddress: string) => ['org', treasuryAddress, 'categories'] as const,
   balance: (treasuryAddress: string) => ['org', treasuryAddress, 'balance'] as const,
+  threshold: (treasuryAddress: string) => ['org', treasuryAddress, 'threshold'] as const,
+  approvers: (treasuryAddress: string) => ['org', treasuryAddress, 'approvers'] as const,
+  requests: (treasuryAddress: string, status?: RequestStatus) =>
+    ['org', treasuryAddress, 'requests', status ?? 'all'] as const,
+  request: (treasuryAddress: string, requestId: number) =>
+    ['org', treasuryAddress, 'requests', requestId] as const,
 } satisfies Record<string, (...args: never[]) => readonly unknown[]>;
 
 /** The organization directory: every indexed treasury, newest first. */
@@ -54,5 +67,44 @@ export function balanceQuery(treasuryAddress: string) {
   return queryOptions({
     queryKey: qk.balance(treasuryAddress),
     queryFn: async () => (await treasury.getBalance(treasuryAddress)).toString(),
+  });
+}
+
+/**
+ * The number of approvals a request needs before it executes. A free on-chain
+ * read; combined with a request's approval count it drives the progress UI.
+ */
+export function thresholdQuery(treasuryAddress: string) {
+  return queryOptions({
+    queryKey: qk.threshold(treasuryAddress),
+    queryFn: () => treasury.getThreshold(treasuryAddress),
+  });
+}
+
+/** The treasury's approver set, read live from the contract. */
+export function approversQuery(treasuryAddress: string) {
+  return queryOptions({
+    queryKey: qk.approvers(treasuryAddress),
+    queryFn: () => treasury.getApprovers(treasuryAddress),
+  });
+}
+
+/**
+ * A treasury's disbursement requests, from the indexer. An optional status
+ * scopes the list to one lifecycle stage; the key includes it so each filter
+ * caches independently.
+ */
+export function requestsQuery(treasuryAddress: string, status?: RequestStatus) {
+  return queryOptions({
+    queryKey: qk.requests(treasuryAddress, status),
+    queryFn: ({ signal }) => fetchRequests(treasuryAddress, status, signal),
+  });
+}
+
+/** A single disbursement request with its current approvals. */
+export function requestQuery(treasuryAddress: string, requestId: number) {
+  return queryOptions({
+    queryKey: qk.request(treasuryAddress, requestId),
+    queryFn: ({ signal }) => fetchRequest(treasuryAddress, requestId, signal),
   });
 }

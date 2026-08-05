@@ -79,6 +79,54 @@ export function Input({
   );
 }
 
+/** A native select, styled to match {@link Input}, with a custom chevron. */
+export function Select({
+  id,
+  value,
+  onChange,
+  disabled,
+  invalid,
+  children,
+}: {
+  id?: string;
+  value: string;
+  onChange: (v: string) => void;
+  disabled?: boolean;
+  invalid?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="relative mt-1.5">
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        aria-invalid={invalid || undefined}
+        className={cn(
+          'block w-full appearance-none rounded-lg border bg-canvas-raised py-2 pl-3 pr-9 text-sm text-ink',
+          'transition-colors duration-150',
+          'focus:outline-none focus:ring-1',
+          invalid
+            ? 'border-danger/60 focus:border-danger focus:ring-danger'
+            : 'border-line hover:border-accent-muted focus:border-accent focus:ring-accent',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+        )}
+      >
+        {children}
+      </select>
+      <svg
+        viewBox="0 0 16 16"
+        className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-faint"
+        fill="none"
+        aria-hidden
+      >
+        <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
 /** Primary (accent) and secondary (outline) button treatments, shared. */
 export function PrimaryButton({
   children,

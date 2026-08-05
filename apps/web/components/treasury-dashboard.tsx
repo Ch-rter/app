@@ -3,28 +3,36 @@
 /**
  * Treasury dashboard — the operating view for a single organization.
  *
- * Three data sources converge here:
+ * Four data sources converge here:
  *   - the indexer's org metadata (name, admin) — {@link orgQuery}
  *   - the treasury's live on-chain balance — {@link balanceQuery} (a free read)
  *   - the indexer's budget categories with cap/spent — {@link categoriesQuery}
+ *   - the indexer's disbursement requests — {@link requestsQuery}
  *
  * Amounts are raw i128 strings throughout; every display value passes through
  * {@link formatAmount} so the full range survives without a float. Categories
- * render as rows (not cards), each showing a cap-usage bar built from bigint
- * math. Admin-only actions (create/edit categories) arrive in Step 13; this
- * view is read-only.
+ * and requests render as rows (not cards). Admin-only category actions and the
+ * member submit-request flow are gated on the connected wallet; the contract
+ * enforces authorization regardless.
  */
 import Link from 'next/link';
 import { useState } from 'react';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import { orgQuery, categoriesQuery, balanceQuery } from '../lib/queries';
-import { formatAmount, cn } from '../lib/format';
-import type { Category, Org } from '../lib/indexer';
+import {
+  orgQuery,
+  categoriesQuery,
+  balanceQuery,
+  requestsQuery,
+} from '../lib/queries';
+import { formatAmount, truncateAddress, cn } from '../lib/format';
+import type { Category, Org, Request } from '../lib/indexer';
 import { useWalletStore } from '../store/wallet';
 import { CopyAddress } from './copy-address';
 import { CategoryFormModal } from './category-form-modal';
 import { CategoryAdminActions } from './category-admin-actions';
+import { SubmitRequestModal } from './submit-request-modal';
+import { RequestStatusBadge } from './request-status-badge';
 import { PrimaryButton } from './form';
 import { Skeleton, EmptyState, ErrorState } from './states';
 
@@ -64,6 +72,7 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const org = useQuery(orgQuery(treasury));
   const balance = useQuery(balanceQuery(treasury));
   const categories = useQuery(categoriesQuery(treasury));
+  const requests = useQuery(requestsQuery(treasury));
 
   // The connected wallet is the admin only when it exactly matches the org's
   // on-chain admin address. Admin-only affordances (create/edit/pause) are
@@ -96,6 +105,13 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
         treasuryId={treasury}
         admin={adminAddress}
         isAdmin={isAdmin}
+      />
+
+      <RequestsSection
+        requests={requests}
+        categories={categories}
+        treasuryId={treasury}
+        requester={address}
       />
     </div>
   );
@@ -357,6 +373,153 @@ function CategoriesSkeleton() {
             <Skeleton className="h-3 w-24 rounded" />
           </div>
           <Skeleton className="h-1.5 w-full rounded-full" />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Requests
+// ---------------------------------------------------------------------------
+
+function RequestsSection({
+  requests,
+  categories,
+  treasuryId,
+  requester,
+}: {
+  requests: UseQueryResult<Request[]>;
+  categories: UseQueryResult<Category[]>;
+  treasuryId: string;
+  requester: string | null;
+}) {
+  const [creating, setCreating] = useState(false);
+
+  // A request can only be raised by a connected wallet against an active
+  // category. When either is missing the submit affordance is withheld — the
+  // contract would reject the call regardless.
+  const activeCategories = (categories.data ?? []).filter((c) => c.active);
+  const canSubmit = requester !== null && activeCategories.length > 0;
+
+  // Category names for row labels, resolved from the categories query.
+  const categoryName = (categoryId: number): string =>
+    categories.data?.find((c) => c.categoryId === categoryId)?.name ?? `Category ${categoryId}`;
+
+  return (
+    <section className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-lg font-semibold text-ink">Requests</h2>
+        {canSubmit && (
+          <PrimaryButton onClick={() => setCreating(true)}>
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+            New request
+          </PrimaryButton>
+        )}
+      </div>
+
+      {requests.isPending && <RequestsSkeleton />}
+
+      {requests.isError && (
+        <ErrorState
+          title="Could not load requests"
+          body={errorText(requests.error, "This treasury's requests could not be loaded.")}
+          onRetry={() => void requests.refetch()}
+        />
+      )}
+
+      {requests.isSuccess && requests.data.length === 0 && (
+        <EmptyState
+          title="No requests yet"
+          body="Requests propose a disbursement against a category. They stay pending until approvers reach the treasury's threshold, then execute on-chain."
+          action={
+            canSubmit ? (
+              <PrimaryButton onClick={() => setCreating(true)}>New request</PrimaryButton>
+            ) : undefined
+          }
+        />
+      )}
+
+      {requests.isSuccess && requests.data.length > 0 && (
+        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+          {requests.data.map((request) => (
+            <RequestRow
+              key={request.requestId}
+              request={request}
+              categoryName={categoryName(request.categoryId)}
+            />
+          ))}
+        </ul>
+      )}
+
+      {requester !== null && (
+        <SubmitRequestModal
+          open={creating}
+          onClose={() => setCreating(false)}
+          treasuryId={treasuryId}
+          requester={requester}
+          categories={categories.data ?? []}
+        />
+      )}
+    </section>
+  );
+}
+
+function RequestRow({
+  request,
+  categoryName,
+}: {
+  request: Request;
+  categoryName: string;
+}) {
+  const approvalCount = request.approvals.length;
+
+  return (
+    <li className="flex items-center justify-between gap-4 px-5 py-4">
+      <div className="min-w-0 space-y-1">
+        <div className="flex items-center gap-2.5">
+          <span className="truncate text-sm font-medium text-ink">{categoryName}</span>
+          <RequestStatusBadge status={request.status} />
+        </div>
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-ink-muted">
+          <span>
+            To <span className="font-mono text-ink-faint">{truncateAddress(request.recipient, 6, 6)}</span>
+          </span>
+          {request.memo.trim() !== '' && (
+            <>
+              <span aria-hidden className="text-ink-faint">·</span>
+              <span className="truncate">{request.memo}</span>
+            </>
+          )}
+        </p>
+      </div>
+
+      <div className="flex shrink-0 flex-col items-end gap-1">
+        <span className="font-mono text-sm font-medium tabular-nums text-ink">
+          {formatAmount(request.amount)}
+        </span>
+        {request.status === 'Pending' && (
+          <span className="text-xs text-ink-faint">
+            {approvalCount} approval{approvalCount === 1 ? '' : 's'}
+          </span>
+        )}
+      </div>
+    </li>
+  );
+}
+
+function RequestsSkeleton() {
+  return (
+    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <li key={i} className="flex items-center justify-between px-5 py-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-40 rounded" />
+            <Skeleton className="h-3 w-52 rounded" />
+          </div>
+          <Skeleton className="h-4 w-20 rounded" />
         </li>
       ))}
     </ul>
