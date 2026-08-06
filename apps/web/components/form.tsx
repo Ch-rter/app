@@ -148,7 +148,7 @@ export function PrimaryButton({
       disabled={disabled}
       className={cn(
         'inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-canvas',
-        'transition-colors duration-150 hover:bg-accent-hover',
+        'transition-[background-color,transform] duration-150 hover:bg-accent-hover active:translate-y-[0.5px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
         'disabled:cursor-not-allowed disabled:opacity-60',
       )}
@@ -180,7 +180,7 @@ export function SecondaryButton({
       disabled={disabled}
       className={cn(
         'inline-flex h-9 items-center justify-center rounded-lg border border-line px-4 text-sm font-medium text-ink',
-        'transition-colors duration-150 hover:border-accent-muted hover:bg-canvas-overlay',
+        'transition-[color,background-color,border-color,transform] duration-150 hover:border-accent-muted hover:bg-canvas-overlay active:translate-y-[0.5px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
         'disabled:cursor-not-allowed disabled:opacity-50',
       )}

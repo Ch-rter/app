@@ -24,10 +24,22 @@ const config: Config = {
           hover: '#5eead4',
           muted: '#134e4a',
         },
+        // Info semantic — for neutral status (pending requests, informational badges)
+        info: {
+          DEFAULT: '#60a5fa',
+          muted: '#1e3a5f',
+        },
         line: '#1e2a3a',
         danger: '#f87171',
         warn: '#fbbf24',
         ok: '#34d399',
+      },
+      // Custom shadows for depth and glow effects
+      boxShadow: {
+        'inner-highlight': 'inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+        'glow-accent': '0 0 12px rgba(45, 212, 191, 0.2)',
+        'glow-warn': '0 0 8px rgba(251, 191, 36, 0.4)',
+        'glow-danger': '0 0 12px rgba(248, 113, 113, 0.15)',
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],

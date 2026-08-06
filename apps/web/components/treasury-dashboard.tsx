@@ -68,6 +68,39 @@ function errorText(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
 
+/**
+ * Each category's cap as a percentage of the summed caps across all categories,
+ * for the allocation overview bar. Bigint math throughout (scaled by 10_000)
+ * so no i128 cap is coerced to a float. Categories with a non-positive or
+ * unparseable cap contribute nothing. Returns an empty array when the total is
+ * zero, so callers can withhold the bar entirely.
+ */
+function allocationSegments(
+  categories: Category[],
+): Array<{ categoryId: number; name: string; pct: number; active: boolean }> {
+  const withCaps = categories.map((c) => {
+    let cap: bigint;
+    try {
+      const v = BigInt(c.cap);
+      cap = v > 0n ? v : 0n;
+    } catch {
+      cap = 0n;
+    }
+    return { category: c, cap };
+  });
+  const total = withCaps.reduce((sum, { cap }) => sum + cap, 0n);
+  if (total <= 0n) return [];
+
+  return withCaps
+    .map(({ category, cap }) => ({
+      categoryId: category.categoryId,
+      name: category.name,
+      active: category.active,
+      pct: Math.max(0, Number((cap * 10_000n) / total) / 100),
+    }))
+    .filter((s) => s.pct > 0);
+}
+
 // ---------------------------------------------------------------------------
 // Dashboard
 // ---------------------------------------------------------------------------
@@ -89,7 +122,7 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const isAdmin = address !== null && adminAddress !== null && address === adminAddress;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <nav>
         <Link
           href="/"
@@ -104,7 +137,15 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
 
       <OrgHeader treasury={treasury} org={org} />
 
-      <BalancePanel balance={balance} />
+      <BalancePanel
+        balance={balance}
+        categoryCount={categories.data?.length ?? null}
+        pendingCount={
+          requests.data ? requests.data.filter((r) => r.status === 'Pending').length : null
+        }
+        threshold={threshold.data ?? null}
+        approverCount={approvers.data?.length ?? null}
+      />
 
       <CategoriesSection
         categories={categories}
@@ -190,40 +231,112 @@ function OrgHeader({
 
 function BalancePanel({
   balance,
+  categoryCount,
+  pendingCount,
+  threshold,
+  approverCount,
 }: {
   balance: UseQueryResult<string>;
+  categoryCount: number | null;
+  pendingCount: number | null;
+  threshold: number | null;
+  approverCount: number | null;
 }) {
   return (
-    <section className="rounded-xl border border-line bg-canvas-raised px-6 py-5">
-      <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
-        Treasury balance
-      </p>
-      <div className="mt-2">
-        {balance.isPending && <Skeleton className="h-9 w-40 rounded-lg" />}
+    <section className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-canvas-raised to-canvas-raised/95 px-6 py-6 shadow-inner-highlight">
+      {/* Decorative accent glow behind the figure. Collapses under reduced-transparency. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(45,212,191,0.12),transparent_70%)] blur-2xl [@media(prefers-reduced-transparency:reduce)]:hidden"
+      />
+      <div className="relative">
+        <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
+          Treasury balance
+        </p>
+        <div className="mt-2">
+          {balance.isPending && <Skeleton className="h-11 w-52 rounded-lg" />}
 
-        {balance.isError && (
-          <div className="flex items-center gap-3">
-            <p className="text-sm text-danger">
-              {errorText(balance.error, 'The on-chain balance is currently unavailable.')}
+          {balance.isError && (
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-danger">
+                {errorText(balance.error, 'The on-chain balance is currently unavailable.')}
+              </p>
+              <button
+                type="button"
+                onClick={() => void balance.refetch()}
+                className="rounded-md text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {balance.isSuccess && (
+            <p className="font-mono text-4xl font-semibold leading-none tracking-tight tabular-nums text-ink">
+              {formatAmount(balance.data)}
             </p>
-            <button
-              type="button"
-              onClick={() => void balance.refetch()}
-              className="rounded-md text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              Retry
-            </button>
-          </div>
-        )}
+          )}
+        </div>
+        <p className="mt-2 text-xs text-ink-muted">Live from the treasury contract.</p>
 
-        {balance.isSuccess && (
-          <p className="font-mono text-3xl font-semibold tabular-nums text-ink">
-            {formatAmount(balance.data)}
-          </p>
-        )}
+        {/* At-a-glance treasury state. */}
+        <div className="mt-5 flex flex-wrap gap-2">
+          <SummaryChip label="categories" value={categoryCount} />
+          <SummaryChip
+            label={pendingCount === 1 ? 'pending request' : 'pending requests'}
+            value={pendingCount}
+            tone={pendingCount !== null && pendingCount > 0 ? 'info' : 'neutral'}
+          />
+          <SummaryChip
+            label="approvals required"
+            value={threshold}
+            suffix={approverCount !== null ? ` of ${approverCount}` : undefined}
+          />
+        </div>
       </div>
-      <p className="mt-1 text-xs text-ink-muted">Live from the treasury contract.</p>
     </section>
+  );
+}
+
+/**
+ * A compact stat pill for the balance hero: a mono figure plus a label. Shows a
+ * skeleton in place of the figure while the value is still loading (null).
+ */
+function SummaryChip({
+  value,
+  label,
+  suffix,
+  tone = 'neutral',
+}: {
+  value: number | null;
+  label: string;
+  suffix?: string;
+  tone?: 'neutral' | 'info';
+}) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs',
+        tone === 'info'
+          ? 'border-info/30 bg-info/10 text-info'
+          : 'border-line bg-canvas-overlay text-ink-muted',
+      )}
+    >
+      {value === null ? (
+        <Skeleton className="h-3 w-4 rounded" />
+      ) : (
+        <span
+          className={cn(
+            'font-mono font-medium tabular-nums',
+            tone === 'info' ? 'text-info' : 'text-ink',
+          )}
+        >
+          {value}
+          {suffix ?? ''}
+        </span>
+      )}
+      <span>{label}</span>
+    </span>
   );
 }
 
@@ -282,7 +395,11 @@ function CategoriesSection({
       )}
 
       {categories.isSuccess && categories.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+        <AllocationBar categories={categories.data} />
+      )}
+
+      {categories.isSuccess && categories.data.length > 0 && (
+        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
           {categories.data.map((category) => (
             <CategoryRow
               key={category.categoryId}
@@ -308,6 +425,49 @@ function CategoriesSection({
   );
 }
 
+/**
+ * A slim horizontal stacked bar showing how the total budget is committed
+ * across categories — cap proportions, not spend. Purely additive context above
+ * the detailed rows; withheld entirely when no category carries a positive cap.
+ * Paused categories read at reduced opacity so the eye lands on live budget.
+ */
+function AllocationBar({ categories }: { categories: Category[] }) {
+  const segments = allocationSegments(categories);
+  if (segments.length === 0) return null;
+
+  // A small fixed cycle of accent-family tints keeps adjacent segments legible
+  // without introducing a second hue — the palette stays teal end to end.
+  const tints = ['bg-accent', 'bg-accent/70', 'bg-accent/45', 'bg-info/60', 'bg-info/40'];
+
+  return (
+    <div className="space-y-2">
+      <div className="flex h-2.5 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight">
+        {segments.map((seg, i) => (
+          <div
+            key={seg.categoryId}
+            className={cn(
+              'h-full first:rounded-l-full last:rounded-r-full',
+              tints[i % tints.length],
+              !seg.active && 'opacity-40',
+            )}
+            style={{ width: `${seg.pct}%` }}
+            title={`${seg.name} · ${Math.round(seg.pct)}% of budget`}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
+        {segments.map((seg, i) => (
+          <span key={seg.categoryId} className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
+            <span className={cn('h-2 w-2 rounded-full', tints[i % tints.length], !seg.active && 'opacity-40')} aria-hidden />
+            {seg.name}
+            <span className="font-mono tabular-nums text-ink-faint">{Math.round(seg.pct)}%</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CategoryRow({
   category,
   treasuryId,
@@ -323,7 +483,7 @@ function CategoryRow({
   const nearCap = pct >= 90;
 
   return (
-    <li className="px-5 py-4">
+    <li className="px-6 py-5">
       <div className="flex items-baseline justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-medium text-ink">{category.name}</span>
@@ -348,7 +508,7 @@ function CategoryRow({
 
       <div className="mt-2.5 flex items-center gap-3">
         <div
-          className="h-1.5 flex-1 overflow-hidden rounded-full bg-canvas-overlay"
+          className="h-2 flex-1 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight"
           role="progressbar"
           aria-valuenow={Math.round(pct)}
           aria-valuemin={0}
@@ -357,8 +517,10 @@ function CategoryRow({
         >
           <div
             className={cn(
-              'h-full rounded-full transition-[width] duration-300 ease-out motion-reduce:transition-none',
-              nearCap ? 'bg-warn' : 'bg-accent',
+              'h-full rounded-full bg-gradient-to-r transition-[width] duration-300 ease-out motion-reduce:transition-none',
+              nearCap
+                ? 'from-warn to-warn shadow-glow-warn'
+                : 'from-accent to-accent-hover',
             )}
             style={{ width: `${pct}%` }}
           />
@@ -373,14 +535,14 @@ function CategoryRow({
 
 function CategoriesSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
       {Array.from({ length: 3 }).map((_, i) => (
-        <li key={i} className="space-y-2.5 px-5 py-4">
+        <li key={i} className="space-y-2.5 px-6 py-5">
           <div className="flex items-center justify-between">
             <Skeleton className="h-4 w-32 rounded" />
             <Skeleton className="h-3 w-24 rounded" />
           </div>
-          <Skeleton className="h-1.5 w-full rounded-full" />
+          <Skeleton className="h-2 w-full rounded-full" />
         </li>
       ))}
     </ul>
@@ -459,7 +621,7 @@ function RequestsSection({
       )}
 
       {requests.isSuccess && requests.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
           {requests.data.map((request) => (
             <RequestRow
               key={request.requestId}
@@ -505,7 +667,7 @@ function RequestRow({
   const isPending = request.status === 'Pending';
 
   return (
-    <li className="flex items-center justify-between gap-4 px-5 py-4">
+    <li className="flex items-center justify-between gap-4 px-6 py-5">
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2.5">
           <Link
@@ -556,9 +718,9 @@ function RequestRow({
 
 function RequestsSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
       {Array.from({ length: 3 }).map((_, i) => (
-        <li key={i} className="flex items-center justify-between px-5 py-4">
+        <li key={i} className="flex items-center justify-between px-6 py-5">
           <div className="space-y-2">
             <Skeleton className="h-4 w-40 rounded" />
             <Skeleton className="h-3 w-52 rounded" />

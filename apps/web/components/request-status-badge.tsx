@@ -13,7 +13,7 @@ import type { RequestStatus } from '../lib/indexer';
 import { cn } from '../lib/format';
 
 const STYLES: Record<RequestStatus, string> = {
-  Pending: 'border-accent-muted bg-accent-muted/40 text-accent',
+  Pending: 'border-info/30 bg-info/10 text-info',
   Executed: 'border-ok/30 bg-ok/10 text-ok',
   Rejected: 'border-danger/30 bg-danger/10 text-danger',
   Cancelled: 'border-line bg-canvas-overlay text-ink-faint',

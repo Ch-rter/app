@@ -20,7 +20,7 @@ import { cn } from '../lib/format';
 export function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn('animate-pulse rounded-md bg-canvas-overlay', className)}
+      className={cn('shimmer animate-pulse rounded-md bg-canvas-overlay', className)}
       aria-hidden
     />
   );
@@ -47,8 +47,10 @@ function Panel({
     <div className="flex flex-col items-center gap-4 rounded-xl border border-line bg-canvas-raised px-6 py-14 text-center">
       <span
         className={cn(
-          'inline-flex h-11 w-11 items-center justify-center rounded-full',
-          tone === 'danger' ? 'bg-danger/10 text-danger' : 'bg-accent-muted text-accent',
+          'inline-flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-inset',
+          tone === 'danger'
+            ? 'bg-danger/10 text-danger ring-danger/20 shadow-glow-danger'
+            : 'bg-accent-muted text-accent ring-accent/20 shadow-glow-accent',
         )}
       >
         {icon}

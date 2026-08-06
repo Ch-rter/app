@@ -42,7 +42,11 @@ export function ApprovalProgress({
             key={i}
             className={cn(
               'h-1.5 w-4 rounded-full transition-colors duration-150',
-              i < filled ? (met ? 'bg-ok' : 'bg-accent') : 'bg-canvas-overlay',
+              i < filled
+                ? met
+                  ? 'bg-ok shadow-[0_0_6px_rgba(52,211,153,0.45)]'
+                  : 'bg-accent'
+                : 'bg-canvas-overlay',
             )}
           />
         ))}

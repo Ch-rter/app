@@ -15,6 +15,39 @@ body {
   @apply bg-canvas text-ink antialiased;
 }
 
+/* Mono carries addresses, hashes, and amounts. Tabular figures keep columns of
+   numbers vertically aligned; the slashed zero disambiguates 0 from O in the
+   on-chain data these fonts render. */
+.font-mono {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Skeletons sweep a faint highlight left-to-right over the base pulse so the
+   loading state reads as active rather than inert. The sweep rides on a
+   pseudo-element; the underlying bg-canvas-overlay pulse shows through. */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* The modal dialog and its backdrop fade in; instant for reduced-motion. */
 dialog[open],
 dialog[open]::backdrop {
@@ -34,9 +67,22 @@ dialog[open]::backdrop {
   .animate-pulse {
     animation: none;
   }
+  .shimmer::after {
+    animation: none;
+    opacity: 0;
+  }
   dialog[open],
   dialog[open]::backdrop {
     animation: none;
+  }
+}
+
+/* Honour reduced-transparency: drop the modal backdrop blur to a near-solid
+   fill so the glass effect never impairs legibility. */
+@media (prefers-reduced-transparency: reduce) {
+  dialog[open]::backdrop {
+    backdrop-filter: none;
+    background-color: rgb(11 15 20 / 0.92);
   }
 }
 
