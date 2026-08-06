@@ -64,8 +64,12 @@ export interface WriteResult {
 
 let cachedServer: rpc.Server | undefined;
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
+// Env values are read through static `process.env.NEXT_PUBLIC_*` member
+// accesses (never `process.env[dynamicName]`), because Next.js only inlines
+// public vars into the client bundle when the property name is a literal it
+// can see at build time. A dynamic lookup compiles to `undefined` in the
+// browser and would throw here even when the value is configured.
+function requireEnv(name: string, value: string | undefined): string {
   if (value === undefined || value.trim() === '') {
     throw new Error(`Missing required environment variable: ${name}`);
   }
@@ -76,13 +80,19 @@ function getServer(): rpc.Server {
   if (cachedServer !== undefined) {
     return cachedServer;
   }
-  const url = requireEnv('NEXT_PUBLIC_SOROBAN_RPC_URL');
+  const url = requireEnv(
+    'NEXT_PUBLIC_SOROBAN_RPC_URL',
+    process.env.NEXT_PUBLIC_SOROBAN_RPC_URL,
+  );
   cachedServer = new rpc.Server(url, { allowHttp: url.startsWith('http://') });
   return cachedServer;
 }
 
 function getNetworkPassphrase(): string {
-  return requireEnv('NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE');
+  return requireEnv(
+    'NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE',
+    process.env.NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE,
+  );
 }
 
 /**
