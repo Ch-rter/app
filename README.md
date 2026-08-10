@@ -1,15 +1,37 @@
 # Charter
 
-Charter is a treasury operations layer for Stellar-based organizations. An
-organization deploys a **treasury** contract, funds it, defines **budget
-categories** with spending caps, and members raise **disbursement requests**
-that execute on-chain once a threshold of approvers signs off. Every state
-change is a Soroban contract call authorized by the user's own wallet — Charter
-never custodies funds or keys.
+[![CI](https://github.com/Ch-rter/app/actions/workflows/ci.yml/badge.svg)](https://github.com/Ch-rter/app/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![Stellar](https://img.shields.io/badge/Stellar-Soroban-7D00FF?logo=stellar)](https://stellar.org/soroban)
 
-This repository (`charter-app`) is the **application layer**: the client SDK, the
-web app, and the read-side indexer. The contracts themselves live in a separate
-repository (`charter-contract`); this app talks to them once they are deployed.
+Charter is a treasury operations layer for Stellar-based organizations. Instead
+of a bare multisig wallet, funds are held under a policy contract with defined
+budget categories, spend limits, and approval thresholds. This repo is the
+application layer: SDK, web dashboard, and event indexer for the contracts in
+`charter-contract`.
+
+## Maintainers
+
+| Maintainer | Role | Contact |
+| ---------- | ---- | ------- |
+| [@fadesany](https://github.com/fadesany) | Lead — application layer (SDK, web, indexer) | GitHub |
+
+## What is this
+
+Charter's application layer is three parts that work together against the
+`charter-contract` Soroban contracts:
+
+- **`packages/sdk`** (`@charter/sdk`) — TypeScript clients for the factory and
+  treasury contracts. It owns the write path: simulate → prepare → sign (with
+  the user's own wallet) → submit → poll for confirmation.
+- **`apps/web`** (`@charter/web`) — the Next.js 15 (App Router) dashboard. It
+  reads organization, category, and request state from the indexer's REST API
+  and issues every state change through the SDK.
+- **`indexer/`** — a Go service that polls Soroban events, folds them into
+  Postgres read models, and serves them over a read-only REST API.
+
+Every state change is a Soroban contract call authorized by the user's own
+wallet — Charter never custodies funds or keys.
 
 ## Architecture
 
@@ -37,8 +59,9 @@ Two data paths, kept strictly separate:
   the wallet to sign, submits, and polls for confirmation. The web app never
   invokes a mutating method directly.
 - **Reads** flow from the indexer's REST API. The indexer folds Soroban events
-  into Postgres read models and serves them; the frontend only ever reads from
-  it and never writes to its database.
+  into Postgres read models and serves them; the web app reads only from the
+  indexer and never touches Soroban RPC for display data, nor writes to the
+  indexer's database.
 
 ### The money model
 
@@ -46,7 +69,6 @@ Contract amounts are `i128`. They survive end to end without ever becoming a
 float: the indexer stores them as `NUMERIC(30,0)`, the API returns them as
 decimal **strings**, and the web app formats them with bigint-safe helpers
 (`formatAmount` / `parseAmount`). Token amounts use 7 decimals (`TOKEN_DECIMALS`).
-
 ## Repository layout
 
 | Path            | What it is                                                             |
@@ -58,7 +80,9 @@ decimal **strings**, and the web app formats them with bigint-safe helpers
 `packages/*` and `apps/*` form an npm workspace (single root lockfile). The
 indexer is a standalone Go module (`github.com/Ch-rter/app/indexer`).
 
-## Prerequisites
+## Quick start
+
+### Prerequisites
 
 - **Node.js ≥ 20** and npm
 - **Go ≥ 1.26** (for the indexer)
@@ -66,8 +90,6 @@ indexer is a standalone Go module (`github.com/Ch-rter/app/indexer`).
 - A Stellar wallet supported by
   [`stellar-wallets-kit`](https://github.com/Creit-Tech/Stellar-Wallets-Kit)
   (e.g. Freighter) for signing, on the network your config points at
-
-## Local setup
 
 From the repository root:
 
@@ -122,6 +144,9 @@ UI; deploying a treasury or raising a request requires the real id and a funded
 wallet.
 
 ## Configuration
+
+Both packages ship a committed `.env.example`; copy it and fill in the blanks.
+No secrets are committed.
 
 ### Web (`apps/web/.env.local`)
 
@@ -184,5 +209,40 @@ Indexer (from `indexer/`): `go vet ./...`, `go build ./...`, `go run .`.
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs on every push and pull request against `main`:
-the web/SDK workspace is linted, type-checked, and built; the indexer is vetted
-and built. The two jobs run in parallel.
+
+- **Web (lint · typecheck · build)** — `npm ci`, `npm run lint`,
+  `npm run typecheck`, `npm run build:web`.
+- **Indexer (vet · build)** — `go vet ./...` and `go build ./...` in `indexer/`.
+
+The two jobs run in parallel.
+
+## Contributing
+
+Contributions are welcome. To keep the two data paths and the money model
+intact, please follow these conventions.
+
+**Finding something to work on.** Check the
+[open issues](https://github.com/Ch-rter/app/issues); issues labeled
+`good first issue` are a sensible starting point.
+
+**Branch naming.** Branch off `main` with a type prefix:
+`feat/<short-desc>`, `fix/<short-desc>`, `docs/<short-desc>`, or
+`chore/<short-desc>`.
+
+**Commit format.** Use [Conventional Commits](https://www.conventionalcommits.org/)
+with a scope, e.g. `feat(sdk): …`, `fix(indexer): …`, `docs(web): …`.
+
+**Pull request checklist.** Before opening a PR, confirm:
+
+- [ ] `go vet ./...` is clean (for indexer changes)
+- [ ] `npm run build` / `npm run build:web` succeeds (for web/SDK changes)
+- [ ] `npm run lint` and `npm run typecheck` pass
+- [ ] No `any` types introduced in TypeScript
+- [ ] Writes still go through `packages/sdk`; reads still come from the indexer
+
+See [SECURITY.md](./SECURITY.md) for how to report a vulnerability.
+
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=Ch-rter/app)](https://github.com/Ch-rter/app/graphs/contributors)
+
