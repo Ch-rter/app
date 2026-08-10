@@ -20,10 +20,12 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"math/big"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Ch-rter/app/indexer/db"
@@ -31,13 +33,15 @@ import (
 	"github.com/stellar/go/xdr"
 )
 
-// Event type symbols, matched against the first event topic. Kept in one place
-// so the fold switch and any future filtering stay in sync.
+// Event type symbols, matched against the first event topic. Each is the
+// snake_case of its #[contractevent] struct name (the soroban-sdk default) and
+// must track the struct names in
+// charter-contract/contracts/{factory,treasury}/src/events.rs.
 const (
 	evtTreasuryDeployed  = "treasury_deployed"
 	evtCategoryCreated   = "category_created"
-	evtCategoryCapUpdate = "category_cap_updated"
-	evtCategoryActiveSet = "category_active_set"
+	evtCategoryCapUpdate = "cap_updated"
+	evtCategoryActiveSet = "active_changed"
 	evtRequestSubmitted  = "request_submitted"
 	evtRequestApproved   = "request_approved"
 	evtRequestExecuted   = "request_executed"
@@ -108,7 +112,11 @@ func (in *Ingester) poll(ctx context.Context) error {
 	}
 
 	// On a cold start (no cursor) begin from the RPC's latest ledger so the loop
-	// tracks live activity instead of failing against the retention window.
+	// tracks live activity instead of failing against the retention window. The
+	// latest ledger reported by getLatestLedger can sit one or more ledgers ahead
+	// of the ceiling getEvents will accept (they advance independently), so we do
+	// not trust a single guess: getEventsInWindow retries with a decremented
+	// startLedger until the RPC accepts it.
 	startLedger := cursor + 1
 	if cursor == 0 {
 		latest, err := in.rpc.LatestLedger(ctx)
@@ -118,7 +126,7 @@ func (in *Ingester) poll(ctx context.Context) error {
 		startLedger = latest
 	}
 
-	page, err := in.rpc.GetEvents(ctx, startLedger, contractIDs)
+	page, err := in.getEventsInWindow(ctx, startLedger, contractIDs)
 	if err != nil {
 		return err
 	}
@@ -144,6 +152,42 @@ func (in *Ingester) poll(ctx context.Context) error {
 		in.log.Info("ingested events", "count", len(page.Events), "latest_ledger", page.LatestLedger)
 	}
 	return nil
+}
+
+// maxWindowRetries bounds how far getEventsInWindow will walk startLedger back
+// when the RPC rejects it as outside the retained ledger range. A handful of
+// attempts covers the small race between getLatestLedger and getEvents' ceiling
+// without turning a genuinely stale cursor into a long backward scan.
+const maxWindowRetries = 10
+
+// getEventsInWindow calls getEvents, retrying with a decremented startLedger
+// when the RPC rejects the ledger as outside its retained window. Only that
+// specific error is retried; any other error, exhausting the retry budget, or
+// reaching ledger 1 returns the error unchanged so the caller can log it and
+// try again next tick.
+func (in *Ingester) getEventsInWindow(ctx context.Context, startLedger int64, contractIDs []string) (*EventPage, error) {
+	for attempt := 0; ; attempt++ {
+		page, err := in.rpc.GetEvents(ctx, startLedger, contractIDs)
+		if err == nil {
+			return page, nil
+		}
+		if !isLedgerWindowError(err) || attempt >= maxWindowRetries || startLedger <= 1 {
+			return nil, err
+		}
+		in.log.Warn("getEvents startLedger outside window; retrying lower",
+			"start_ledger", startLedger, "attempt", attempt+1)
+		startLedger--
+	}
+}
+
+// isLedgerWindowError reports whether err is the RPC's "startLedger outside the
+// retained range" rejection, the one case getEventsInWindow retries.
+func isLedgerWindowError(err error) bool {
+	var rpcErr *jsonRPCError
+	if errors.As(err, &rpcErr) {
+		return strings.Contains(rpcErr.Message, "must be within the ledger range")
+	}
+	return false
 }
 
 // handleEvent stores the raw event, then dispatches on its type. Folds only run
@@ -178,15 +222,31 @@ func (in *Ingester) handleEvent(ctx context.Context, ev *RPCEvent) error {
 }
 
 // fold projects a first-seen event into the read models.
+//
+// Charter's contract events are emitted with #[contractevent(data_format =
+// "vec" | "single-value")], never "map", so their layout is positional, not
+// keyed:
+//   - Topics[0] is the event-name symbol; each #[topic] field follows in
+//     declaration order, so topicArg(0) == Topics[1].
+//   - A "vec" event carries its non-topic fields as an ordered vec in Value,
+//     read by declaration order via vecArg(i).
+//   - A "single-value" event carries its one non-topic field as the bare Value
+//     scalar, read via singleValue().
+//
+// Each case documents the exact on-chain field order it depends on. That order
+// lives in charter-contract/contracts/{factory,treasury}/src/events.rs and this
+// switch is fragile to reordering a struct's fields or changing its
+// data_format there.
 func (in *Ingester) fold(ctx context.Context, ev *RPCEvent, body *eventBody) error {
-	v := body.fields()
 	switch body.Type {
 	case evtTreasuryDeployed:
-		treasury := v.str("treasury")
+		// TreasuryDeployed (vec): topic[0]=org_id(u32);
+		// value=[name(String), treasury(Address), admin(Address)].
+		treasury := asStr(body.vecArg(1))
 		if treasury == "" {
 			return nil
 		}
-		if err := in.db.UpsertOrg(ctx, v.str("name"), treasury, v.str("admin"), ev.Ledger); err != nil {
+		if err := in.db.UpsertOrg(ctx, asStr(body.vecArg(0)), treasury, asStr(body.vecArg(2)), ev.Ledger); err != nil {
 			return err
 		}
 		// Newly deployed treasuries join the watch list so their own events are
@@ -194,32 +254,48 @@ func (in *Ingester) fold(ctx context.Context, ev *RPCEvent, body *eventBody) err
 		return in.db.AddWatchedContract(ctx, treasury, "treasury")
 
 	case evtCategoryCreated:
-		return in.db.UpsertCategory(ctx, ev.ContractID, v.int("category_id"), v.str("name"), v.amount("cap"), v.boolean("active", true))
+		// CategoryCreated (vec): topic[0]=category_id(u32);
+		// value=[name(String), cap(i128)]. A new category is active.
+		return in.db.UpsertCategory(ctx, ev.ContractID, asInt(body.topicArg(0)),
+			asStr(body.vecArg(0)), asAmount(body.vecArg(1)), true)
 
 	case evtCategoryCapUpdate:
-		return in.db.UpdateCategoryCap(ctx, ev.ContractID, v.int("category_id"), v.amount("cap"))
+		// CapUpdated (single-value): topic[0]=category_id(u32); value=new_cap(i128).
+		return in.db.UpdateCategoryCap(ctx, ev.ContractID, asInt(body.topicArg(0)), asAmount(body.singleValue()))
 
 	case evtCategoryActiveSet:
-		return in.db.SetCategoryActive(ctx, ev.ContractID, v.int("category_id"), v.boolean("active", false))
+		// ActiveChanged (single-value): topic[0]=category_id(u32); value=active(bool).
+		return in.db.SetCategoryActive(ctx, ev.ContractID, asInt(body.topicArg(0)), asBool(body.singleValue(), false))
 
 	case evtRequestSubmitted:
-		return in.db.UpsertRequest(ctx, ev.ContractID, v.int("request_id"), v.int("category_id"),
-			v.str("recipient"), v.amount("amount"), v.str("memo"), v.str("requester"), ev.Ledger)
+		// RequestSubmitted (vec): topic[0]=request_id(u32);
+		// value=[category_id(u32), recipient(Address), amount(i128)]. The event
+		// carries no memo or requester, so those columns are left empty.
+		return in.db.UpsertRequest(ctx, ev.ContractID, asInt(body.topicArg(0)), asInt(body.vecArg(0)),
+			asStr(body.vecArg(1)), asAmount(body.vecArg(2)), "", "", ev.Ledger)
 
 	case evtRequestApproved:
-		return in.db.AddApproval(ctx, ev.ContractID, v.int("request_id"), v.str("approver"), ev.Ledger)
+		// RequestApproved (single-value): topic[0]=request_id(u32); value=approver(Address).
+		return in.db.AddApproval(ctx, ev.ContractID, asInt(body.topicArg(0)), asStr(body.singleValue()), ev.Ledger)
 
 	case evtRequestExecuted:
-		return in.foldExecuted(ctx, ev.ContractID, v.int("request_id"))
+		// RequestExecuted (vec): topic[0]=request_id(u32);
+		// value=[recipient(Address), amount(i128)]. The spent total is taken from
+		// the amount stored at submission, so only request_id is needed here.
+		return in.foldExecuted(ctx, ev.ContractID, asInt(body.topicArg(0)))
 
 	case evtRequestRejected:
-		return in.db.SetRequestStatus(ctx, ev.ContractID, v.int("request_id"), "Rejected")
+		// RequestRejected (single-value): topic[0]=request_id(u32);
+		// value=approver(Address), not needed here.
+		return in.db.SetRequestStatus(ctx, ev.ContractID, asInt(body.topicArg(0)), "Rejected")
 
 	case evtRequestCancelled:
-		return in.db.SetRequestStatus(ctx, ev.ContractID, v.int("request_id"), "Cancelled")
+		// RequestCancelled (single-value): topic[0]=request_id(u32); no data fields.
+		return in.db.SetRequestStatus(ctx, ev.ContractID, asInt(body.topicArg(0)), "Cancelled")
 
 	default:
-		// Unknown event: already captured in the raw log, nothing to project.
+		// Unknown or unprojected event (e.g. deposited, which has no read model):
+		// already captured in the raw log, nothing to project.
 		return nil
 	}
 }
@@ -244,76 +320,97 @@ func (in *Ingester) foldExecuted(ctx context.Context, treasury string, requestID
 
 // -- Decoded event body ------------------------------------------------------
 
-// eventBody is the decoded form of a contract event: the type (first topic) and
-// the decoded value. Stored as the raw payload and read by the folds.
+// eventBody is the decoded form of a contract event: the event-name symbol
+// (first topic), the full decoded topic list, and the decoded data value.
+// Stored as the raw payload and read positionally by the folds.
 type eventBody struct {
-	Type   string        `json:"type"`
-	Topics []any         `json:"topics"`
-	Value  any           `json:"value"`
-	fieldM map[string]any `json:"-"`
+	Type   string `json:"type"`
+	Topics []any  `json:"topics"`
+	Value  any    `json:"value"`
 }
 
-// fields returns the event's value as a keyed accessor. Charter events carry
-// their data as an ScMap, so the decoded value is a map[string]any; a non-map
-// value yields an accessor over an empty map (every lookup returns a zero).
-func (b *eventBody) fields() fieldView {
-	if b.fieldM == nil {
-		if m, ok := b.Value.(map[string]any); ok {
-			b.fieldM = m
-		} else {
-			b.fieldM = map[string]any{}
-		}
+// topicArg returns the i-th #[topic] field of the event: the topic after the
+// event-name symbol, so topicArg(0) == Topics[1]. Returns nil if absent.
+func (b *eventBody) topicArg(i int) any {
+	idx := i + 1
+	if idx < 0 || idx >= len(b.Topics) {
+		return nil
 	}
-	return fieldView{b.fieldM}
+	return b.Topics[idx]
 }
 
-// fieldView reads typed values out of a decoded event map, defaulting on any
-// missing or mistyped field so a fold never panics on an unexpected shape.
-type fieldView struct{ m map[string]any }
+// vecArg returns the i-th element of a data_format="vec" event's value, or nil
+// if the value is not a vec or the index is out of range.
+func (b *eventBody) vecArg(i int) any {
+	vec, ok := b.Value.([]any)
+	if !ok || i < 0 || i >= len(vec) {
+		return nil
+	}
+	return vec[i]
+}
 
-func (f fieldView) str(key string) string {
-	if s, ok := f.m[key].(string); ok {
+// singleValue returns a data_format="single-value" event's payload: the bare
+// data scalar, emitted directly rather than wrapped in a vec.
+func (b *eventBody) singleValue() any {
+	return b.Value
+}
+
+// asStr reads a decoded ScVal as a string. Symbols, strings, and strkey-encoded
+// addresses all decode to Go strings; anything else yields "".
+func asStr(v any) string {
+	if s, ok := v.(string); ok {
 		return s
 	}
 	return ""
 }
 
-// int reads an integer field. Integers decode to strings (u64/i128) or JSON
-// numbers depending on width, so both are accepted.
-func (f fieldView) int(key string) int64 {
-	switch v := f.m[key].(type) {
-	case string:
-		if n, ok := new(big.Int).SetString(v, 10); ok {
-			return n.Int64()
-		}
+// asInt reads a decoded ScVal as an int64. Narrow integers (u32/i32) decode to
+// int64; wide integers (u64/i128) decode to decimal strings; a JSON round-trip
+// of the stored payload can yield float64/json.Number. All are accepted;
+// anything else is 0.
+func asInt(v any) int64 {
+	switch n := v.(type) {
+	case int64:
+		return n
+	case int:
+		return int64(n)
 	case float64:
-		return int64(v)
+		return int64(n)
 	case json.Number:
-		if n, err := v.Int64(); err == nil {
-			return n
+		if x, err := n.Int64(); err == nil {
+			return x
+		}
+	case string:
+		if x, ok := new(big.Int).SetString(n, 10); ok {
+			return x.Int64()
 		}
 	}
 	return 0
 }
 
-// amount reads a wide integer field as a decimal string, preserving the full
-// i128 range. Missing fields become "0".
-func (f fieldView) amount(key string) string {
-	switch v := f.m[key].(type) {
+// asAmount reads a decoded ScVal as a decimal string, preserving the full i128
+// range (wide integers already decode to strings). Missing/other values are "0".
+func asAmount(v any) string {
+	switch n := v.(type) {
 	case string:
-		if _, ok := new(big.Int).SetString(v, 10); ok {
-			return v
+		if _, ok := new(big.Int).SetString(n, 10); ok {
+			return n
 		}
+	case int64:
+		return big.NewInt(n).String()
+	case int:
+		return big.NewInt(int64(n)).String()
 	case float64:
-		return new(big.Int).SetInt64(int64(v)).String()
+		return big.NewInt(int64(n)).String()
 	case json.Number:
-		return v.String()
+		return n.String()
 	}
 	return "0"
 }
 
-func (f fieldView) boolean(key string, def bool) bool {
-	if b, ok := f.m[key].(bool); ok {
+// asBool reads a decoded ScVal as a bool, falling back to def.
+func asBool(v any, def bool) bool {
+	if b, ok := v.(bool); ok {
 		return b
 	}
 	return def
