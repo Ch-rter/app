@@ -9,6 +9,7 @@
 import { Hero } from '../../components/marketing/hero';
 import { HowItWorks } from '../../components/marketing/how-it-works';
 import { Problem } from '../../components/marketing/problem';
+import { Proof } from '../../components/marketing/proof';
 import { SiteNav } from '../../components/marketing/site-nav';
 
 export default function LandingPage() {
@@ -19,6 +20,7 @@ export default function LandingPage() {
         <Hero />
         <Problem />
         <HowItWorks />
+        <Proof />
       </main>
     </>
   );
