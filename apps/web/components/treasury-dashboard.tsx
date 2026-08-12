@@ -125,7 +125,7 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
     <div className="space-y-10">
       <nav>
         <Link
-          href="/"
+          href="/app"
           className="inline-flex items-center gap-1.5 rounded text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>

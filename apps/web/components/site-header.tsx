@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-sticky border-b border-line bg-gradient-to-b from-canvas/95 to-canvas/75 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-6">
         <Link
-          href="/"
+          href="/app"
           className="group inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-accent-muted text-accent">
