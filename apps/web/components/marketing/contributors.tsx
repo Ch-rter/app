@@ -43,7 +43,7 @@ export function Contributors() {
         Built in the open
       </h2>
       <p className="mt-4 max-w-2xl text-[20px] leading-snug text-ink/70">
-        Charter is open source, maintained by{' '}
+        Charter is developed in the open, maintained by{' '}
         <a
           href={MAINTAINER_URL}
           target="_blank"

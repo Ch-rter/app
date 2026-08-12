@@ -11,6 +11,7 @@ import { Hero } from '../../components/marketing/hero';
 import { HowItWorks } from '../../components/marketing/how-it-works';
 import { Problem } from '../../components/marketing/problem';
 import { Proof } from '../../components/marketing/proof';
+import { SiteFooter } from '../../components/marketing/site-footer';
 import { SiteNav } from '../../components/marketing/site-nav';
 
 export default function LandingPage() {
@@ -24,6 +25,7 @@ export default function LandingPage() {
         <Proof />
         <Contributors />
       </main>
+      <SiteFooter />
     </>
   );
 }
