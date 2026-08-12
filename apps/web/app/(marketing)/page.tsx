@@ -7,6 +7,7 @@
  * neo-brutalist theme.
  */
 import { Hero } from '../../components/marketing/hero';
+import { Problem } from '../../components/marketing/problem';
 import { SiteNav } from '../../components/marketing/site-nav';
 
 export default function LandingPage() {
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <SiteNav />
       <main>
         <Hero />
+        <Problem />
       </main>
     </>
   );
