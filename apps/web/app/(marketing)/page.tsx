@@ -6,6 +6,7 @@
  * "/app" (see the (app) route group); this group owns "/" and its own light
  * neo-brutalist theme.
  */
+import { Contributors } from '../../components/marketing/contributors';
 import { Hero } from '../../components/marketing/hero';
 import { HowItWorks } from '../../components/marketing/how-it-works';
 import { Problem } from '../../components/marketing/problem';
@@ -21,6 +22,7 @@ export default function LandingPage() {
         <Problem />
         <HowItWorks />
         <Proof />
+        <Contributors />
       </main>
     </>
   );
