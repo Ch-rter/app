@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { NewOrgForm } from '../../components/new-org-form';
+import { NewOrgForm } from '@/components/new-org-form';
 
 /**
  * New organization route. Deploys a per-org treasury via the factory contract.
@@ -11,7 +11,7 @@ export default function NewOrgPage() {
     <div className="mx-auto max-w-xl">
       <nav className="mb-6">
         <Link
-          href="/"
+          href="/app"
           className="inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>

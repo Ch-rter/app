@@ -1,4 +1,4 @@
-import { OrgDirectory } from '../components/org-directory';
+import { OrgDirectory } from '@/components/org-directory';
 
 /**
  * Landing page: the organization directory. Charter is org-centric — the first

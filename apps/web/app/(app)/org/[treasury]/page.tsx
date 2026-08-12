@@ -1,4 +1,4 @@
-import { TreasuryDashboard } from '../../../components/treasury-dashboard';
+import { TreasuryDashboard } from '@/components/treasury-dashboard';
 
 /**
  * Treasury dashboard route: /org/{treasuryAddress}.

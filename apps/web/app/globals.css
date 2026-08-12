@@ -15,6 +15,18 @@ body {
   @apply bg-canvas text-ink antialiased;
 }
 
+/* The marketing (landing) group opts into the light neo-brutalist theme. It
+   owns its own <html>/<body> via the (marketing) route group, so scoping the
+   override to this class leaves the dashboard's dark defaults untouched.
+   --color-ink repoints the ink token to #14171F (dark-on-paper); color-scheme
+   flips UA controls and scrollbars to light. The --font-* variables are set on
+   the same element by next/font in the marketing layout. The bg-paper utility
+   on the marketing <body> overrides the bg-canvas above (class beats element). */
+.marketing-root {
+  color-scheme: light;
+  --color-ink: 20 23 31;
+}
+
 /* Mono carries addresses, hashes, and amounts. Tabular figures keep columns of
    numbers vertically aligned; the slashed zero disambiguates 0 from O in the
    on-chain data these fonts render. */

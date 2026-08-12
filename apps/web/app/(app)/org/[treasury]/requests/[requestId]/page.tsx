@@ -1,4 +1,4 @@
-import { RequestDetail } from '../../../../../components/request-detail';
+import { RequestDetail } from '@/components/request-detail';
 
 /**
  * Request detail route: /org/{treasuryAddress}/requests/{requestId}.
