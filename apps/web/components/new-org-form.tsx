@@ -177,7 +177,7 @@ export function NewOrgForm() {
 
   if (address === null) {
     return (
-      <div className="rounded-xl border border-line bg-canvas-raised px-6 py-10 text-center">
+      <div className="rounded-card border-2 border-ink bg-paper-raised px-6 py-10 text-center shadow-brutal">
         <p className="text-sm text-ink-muted">Connect your wallet to create an organization.</p>
       </div>
     );
@@ -190,7 +190,7 @@ export function NewOrgForm() {
         reset();
         mutate(form);
       }}
-      className="space-y-6"
+      className="space-y-6 rounded-card border-2 border-ink bg-paper-raised p-5 shadow-brutal sm:p-7"
     >
       {/* Name */}
       <div>
