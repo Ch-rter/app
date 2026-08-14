@@ -297,12 +297,12 @@ function ApproverRoster({
             <div className="flex min-w-0 items-center gap-2">
               <CopyAddress address={address} />
               {address === requester && (
-                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                <span className="rounded-pill border-2 border-ink bg-paper px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Requester
                 </span>
               )}
               {!inSet && (
-                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                <span className="rounded-pill border-2 border-ink bg-paper px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Former approver
                 </span>
               )}

@@ -46,7 +46,7 @@ export function ApprovalProgress({
                 ? met && i === threshold - 1
                   ? 'bg-signal-green'
                   : 'bg-ledger-gold'
-                : 'bg-canvas-overlay',
+                : 'bg-ink/10',
             )}
           />
         ))}

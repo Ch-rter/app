@@ -16,7 +16,7 @@ const STYLES: Record<RequestStatus, string> = {
   Pending: 'border-ink bg-ledger-gold/35 text-ink',
   Executed: 'border-ink bg-signal-green text-white',
   Rejected: 'border-ink bg-flag-red text-white',
-  Cancelled: 'border-ink bg-canvas-overlay text-ink-muted',
+  Cancelled: 'border-ink bg-paper text-ink-muted',
 };
 
 export function RequestStatusBadge({

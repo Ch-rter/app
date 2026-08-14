@@ -20,7 +20,7 @@ import { cn } from '../lib/format';
 export function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn('shimmer animate-pulse rounded-md bg-canvas-overlay', className)}
+      className={cn('shimmer animate-pulse rounded-md bg-ink/10', className)}
       aria-hidden
     />
   );

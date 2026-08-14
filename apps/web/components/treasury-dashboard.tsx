@@ -483,7 +483,7 @@ function CategoryRow({
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-medium text-ink">{category.name}</span>
           {!category.active && (
-            <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+            <span className="rounded-pill border-2 border-ink bg-paper px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
               Paused
             </span>
           )}
