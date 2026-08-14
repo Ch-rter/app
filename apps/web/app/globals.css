@@ -51,19 +51,16 @@ body {
 .shimmer::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  left: 0;
+  width: 35%;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.04) 50%,
-    transparent 100%
-  );
+  background: rgb(251 250 246 / 0.72);
   animation: shimmer 1.6s ease-in-out infinite;
 }
 @keyframes shimmer {
   100% {
-    transform: translateX(100%);
+    transform: translateX(390%);
   }
 }
 
@@ -101,7 +98,7 @@ dialog[open]::backdrop {
 @media (prefers-reduced-transparency: reduce) {
   dialog[open]::backdrop {
     backdrop-filter: none;
-    background-color: rgb(11 15 20 / 0.92);
+    background-color: rgb(20 23 31 / 0.82);
   }
 }
 
