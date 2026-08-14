@@ -75,15 +75,17 @@ function AccountPill({ address, network }: { address: string; network: string })
         type="button"
         popoverTarget={popoverId}
         className={cn(
-          'inline-flex h-9 items-center gap-2 rounded-lg border border-line px-3 text-sm',
-          'bg-canvas-raised text-ink transition-colors duration-150',
-          'hover:border-accent-muted hover:bg-canvas-overlay',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+          'inline-flex min-h-10 items-center gap-2 rounded-card border-2 border-ink px-3 text-sm',
+          'bg-paper-raised text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150',
+          'hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised',
         )}
       >
-        <span className="inline-flex h-1.5 w-1.5 rounded-full bg-ok" aria-hidden />
+        <span className="inline-flex h-2 w-2 rounded-full border border-ink bg-signal-green" aria-hidden />
         <span className="font-mono text-ink">{truncateAddress(address)}</span>
-        <span className="hidden text-xs text-ink-faint sm:inline">{network}</span>
+        <span className="hidden rounded-pill border-2 border-ink px-2 py-0.5 text-[10px] font-medium text-ink-muted sm:inline">
+          {network}
+        </span>
       </button>
 
       <div
