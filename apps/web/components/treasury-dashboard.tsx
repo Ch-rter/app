@@ -122,11 +122,11 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const isAdmin = address !== null && adminAddress !== null && address === adminAddress;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <nav>
         <Link
           href="/app"
-          className="inline-flex items-center gap-1.5 rounded text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-3 py-2 text-sm font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
             <path d="M10 4 6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -197,15 +197,15 @@ function OrgHeader({
   }
 
   return (
-    <header className="flex items-start gap-4">
+    <header className="flex items-start gap-4 border-b-2 border-ink pb-8">
       <span
-        className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-muted text-lg font-semibold text-accent"
+        className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-card border-2 border-ink bg-ledger-gold font-display text-xl text-ink shadow-brutal"
         aria-hidden
       >
         {org.data.name.charAt(0).toUpperCase()}
       </span>
       <div className="min-w-0 space-y-2">
-        <h1 className="truncate text-2xl font-semibold text-ink">{org.data.name}</h1>
+        <h1 className="truncate font-display text-4xl leading-none text-ink">{org.data.name}</h1>
         <dl className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs">
           <div className="flex items-center gap-2">
             <dt className="text-ink-faint">Treasury</dt>
