@@ -58,7 +58,7 @@ export function CategoryAdminActions({
       <button
         type="button"
         onClick={() => setEditing(true)}
-        className="rounded-md px-2 py-1 text-xs font-medium text-ink-muted transition-colors duration-150 hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       >
         Edit
       </button>
@@ -68,10 +68,10 @@ export function CategoryAdminActions({
         onClick={() => toggle.mutate()}
         disabled={toggle.isPending}
         className={cn(
-          'rounded-md px-2 py-1 text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50',
+          'rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
           category.active
-            ? 'text-ink-muted hover:bg-canvas-overlay hover:text-warn'
-            : 'text-accent hover:bg-canvas-overlay hover:text-accent-hover',
+            ? 'text-ink-muted hover:bg-ledger-gold/20 hover:text-ink'
+            : 'text-ink hover:bg-ledger-gold/30',
         )}
       >
         {toggle.isPending ? '…' : category.active ? 'Pause' : 'Resume'}
