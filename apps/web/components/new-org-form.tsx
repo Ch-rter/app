@@ -73,9 +73,9 @@ function ApproversField({
             disabled={disabled}
             aria-label={`Approver ${i + 1}`}
             className={cn(
-              'block flex-1 rounded-lg border border-line bg-canvas-raised px-3 py-2 font-mono text-sm text-ink placeholder:text-ink-faint',
-              'transition-colors duration-150 hover:border-accent-muted',
-              'focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent',
+              'block min-h-11 flex-1 rounded-badge border-2 border-ink bg-paper-raised px-3.5 py-2.5 font-mono text-sm text-ink placeholder:text-ink-faint',
+              'transition-colors duration-150 hover:bg-white',
+              'focus:outline-none focus:ring-2 focus:ring-ledger-gold focus:ring-offset-2 focus:ring-offset-paper-raised',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           />
@@ -86,8 +86,8 @@ function ApproversField({
               disabled={disabled}
               aria-label="Remove approver"
               className={cn(
-                'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line text-ink-faint',
-                'transition-colors duration-150 hover:border-danger/50 hover:text-danger',
+                'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink-muted shadow-[2px_2px_0_#14171F]',
+                'transition-[background-color,box-shadow,transform] duration-150 hover:bg-danger/10 hover:text-danger hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger',
                 'disabled:cursor-not-allowed disabled:opacity-50',
               )}
@@ -105,8 +105,8 @@ function ApproversField({
         onClick={add}
         disabled={disabled}
         className={cn(
-          'inline-flex h-8 items-center gap-1.5 rounded-lg border border-line px-3 text-xs font-medium text-ink-muted',
-          'transition-colors duration-150 hover:border-accent-muted hover:text-ink',
+          'inline-flex h-9 items-center gap-1.5 rounded-card border-2 border-ink bg-paper-raised px-3 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F]',
+          'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
           'disabled:cursor-not-allowed disabled:opacity-50',
         )}
