@@ -59,12 +59,12 @@ export function Modal({
       }}
       aria-labelledby="modal-title"
       aria-describedby={description ? 'modal-description' : undefined}
-      className="z-modal m-auto w-full max-w-md rounded-2xl border border-line bg-canvas-raised p-0 text-ink shadow-2xl backdrop:bg-canvas/70 backdrop:backdrop-blur-sm"
+      className="z-modal m-auto w-[calc(100%-2rem)] max-w-md rounded-card border-2 border-ink bg-paper-raised p-0 text-ink shadow-brutal backdrop:bg-ink/55"
     >
       <div className="p-6" onClick={(e) => e.stopPropagation()}>
         <div className="mb-5 flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <h2 id="modal-title" className="text-base font-semibold text-ink">
+            <h2 id="modal-title" className="font-display text-xl text-ink">
               {title}
             </h2>
             {description && (
@@ -77,7 +77,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-faint transition-colors duration-150 hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
           >
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
               <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
