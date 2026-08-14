@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { IBM_Plex_Mono, Inter, Space_Grotesk } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { SiteHeader } from '@/components/site-header';
@@ -9,14 +9,23 @@ import '../globals.css';
 // One sans family, one mono. The mono carries addresses, hashes, and amounts —
 // anything where character alignment aids scanning; the sans carries everything
 // else. Both are wired to the CSS variables globals.css references.
-const sans = Inter({
+const display = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-sans',
+  weight: ['700'],
+  variable: '--font-display',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
+const body = Inter({
   subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-body',
+  display: 'swap',
+});
+
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['500'],
   variable: '--font-mono',
   display: 'swap',
 });
@@ -29,8 +38,8 @@ export const metadata: Metadata = {
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
-      <body className="min-h-screen">
+    <html lang="en" className={`app-root ${display.variable} ${body.variable} ${mono.variable}`}>
+      <body className="min-h-screen font-body">
         <Providers>
           <SiteHeader />
           <main className="mx-auto w-full max-w-6xl px-6 py-10">{children}</main>
