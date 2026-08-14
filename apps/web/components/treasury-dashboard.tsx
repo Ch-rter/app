@@ -657,12 +657,12 @@ function RequestRow({
   const isPending = request.status === 'Pending';
 
   return (
-    <li className="flex items-center justify-between gap-4 px-6 py-5">
+    <li className="flex flex-col items-stretch justify-between gap-4 px-4 py-5 sm:flex-row sm:items-center sm:px-6">
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2.5">
           <Link
             href={`/org/${treasuryId}/requests/${request.requestId}`}
-            className="truncate rounded text-sm font-medium text-ink transition-colors duration-150 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="truncate rounded-badge font-display text-lg text-ink underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
           >
             {categoryName}
           </Link>
@@ -681,7 +681,7 @@ function RequestRow({
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-4">
+      <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
         <div className="flex flex-col items-end gap-1">
           <span className="font-mono text-sm font-medium tabular-nums text-ink">
             {formatAmount(request.amount)}
