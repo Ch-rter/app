@@ -25,16 +25,16 @@ export function OrgDirectory() {
   return (
     <section>
       {/* Orientation band: one line on what Charter is, for first-time visitors. */}
-      <div className="mb-6 flex items-start gap-3 rounded-xl border border-line bg-canvas-raised px-5 py-4 shadow-inner-highlight">
+      <div className="mb-8 flex items-start gap-4 rounded-card border-2 border-ink bg-ledger-gold px-5 py-5 shadow-brutal sm:px-6">
         <span
-          className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-muted text-accent"
+          className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink"
           aria-hidden
         >
           <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
             <path d="M8 1 2 4v4c0 3.3 2.6 6.3 6 7 3.4-.7 6-3.7 6-7V4L8 1zm0 2.2 4 2v2.8c0 2.3-1.7 4.4-4 5-2.3-.6-4-2.7-4-5V5.2l4-2z" />
           </svg>
         </span>
-        <p className="text-sm leading-relaxed text-ink-muted">
+        <p className="max-w-3xl text-sm leading-relaxed text-ink">
           <span className="font-medium text-ink">Charter</span> is a treasury operations
           layer for Stellar organizations. Set budget caps, route disbursements through
           approvals, and settle on-chain.
