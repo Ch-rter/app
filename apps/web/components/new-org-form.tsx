@@ -107,7 +107,7 @@ function ApproversField({
         className={cn(
           'inline-flex h-9 items-center gap-1.5 rounded-card border-2 border-ink bg-paper-raised px-3 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F]',
           'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink',
           'disabled:cursor-not-allowed disabled:opacity-50',
         )}
       >
@@ -249,9 +249,9 @@ export function NewOrgForm() {
             onChange={(e) => set('threshold', Math.max(1, Math.min(maxThreshold, Number(e.target.value))))}
             disabled={isPending}
             className={cn(
-              'w-20 rounded-lg border border-line bg-canvas-raised px-3 py-2 text-sm text-ink',
-              'transition-colors duration-150 hover:border-accent-muted',
-              'focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent',
+              'w-20 rounded-badge border-2 border-ink bg-paper-raised px-3 py-2.5 font-mono text-sm text-ink',
+              'transition-colors duration-150 hover:bg-white',
+              'focus:outline-none focus:ring-2 focus:ring-ledger-gold focus:ring-offset-2 focus:ring-offset-paper-raised',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           />
@@ -275,9 +275,9 @@ export function NewOrgForm() {
           type="submit"
           disabled={isPending || form.name.trim() === '' || form.token.trim() === ''}
           className={cn(
-            'inline-flex h-9 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-canvas',
-            'transition-colors duration-150 hover:bg-accent-hover',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+            'inline-flex min-h-10 items-center gap-2 rounded-card border-2 border-ink bg-ledger-gold px-5 text-sm font-medium text-ink shadow-brutal',
+            'transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
             'disabled:cursor-not-allowed disabled:opacity-60',
           )}
         >
