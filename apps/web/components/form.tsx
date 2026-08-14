@@ -35,12 +35,12 @@ export function FieldError({ children }: { children: ReactNode }) {
 /** The shared input treatment: dark surface, accent focus ring, mono opt-in. */
 const inputClass = (mono?: boolean, invalid?: boolean) =>
   cn(
-    'mt-1.5 block w-full rounded-lg border bg-canvas-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint',
-    'transition-colors duration-150',
-    'focus:outline-none focus:ring-1',
+    'mt-2 block min-h-11 w-full rounded-badge border-2 bg-paper-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint',
+    'transition-[background-color,box-shadow] duration-150',
+    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-paper',
     invalid
-      ? 'border-danger/60 focus:border-danger focus:ring-danger'
-      : 'border-line hover:border-accent-muted focus:border-accent focus:ring-accent',
+      ? 'border-danger focus:border-danger focus:ring-danger'
+      : 'border-ink hover:bg-white focus:border-ink focus:ring-ledger-gold',
     'disabled:cursor-not-allowed disabled:opacity-50',
     mono && 'font-mono',
   );
