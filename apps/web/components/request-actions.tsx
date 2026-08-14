@@ -104,7 +104,7 @@ export function RequestActions({
           onClick={() => cancel.mutate()}
           disabled={cancel.isPending}
           className={cn(
-            'rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink-muted shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
+            'rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink-muted shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
           )}
         >
           {cancel.isPending ? '…' : 'Cancel'}
