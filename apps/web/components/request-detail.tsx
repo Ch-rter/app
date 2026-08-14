@@ -57,7 +57,7 @@ export function RequestDetail({
     <nav>
       <Link
         href={`/org/${treasury}`}
-        className="inline-flex items-center gap-1.5 rounded text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-3 py-2 text-sm font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       >
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
           <path d="M10 4 6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -138,10 +138,10 @@ function RequestBody({
   return (
     <div className="space-y-8">
       {/* Header — identity and headline amount */}
-      <header className="flex flex-wrap items-start justify-between gap-4">
+      <header className="flex flex-wrap items-start justify-between gap-6 border-b-2 border-ink pb-8">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-ink">Request #{request.requestId}</h1>
+            <h1 className="font-display text-4xl leading-none text-ink">Request #{request.requestId}</h1>
             <RequestStatusBadge status={request.status} />
           </div>
           <p className="text-sm text-ink-muted">
@@ -149,7 +149,7 @@ function RequestBody({
           </p>
         </div>
         <div className="text-right">
-          <p className="font-mono text-3xl font-semibold tabular-nums text-ink">
+          <p className="font-mono text-4xl font-medium tabular-nums text-ink">
             {formatAmount(request.amount)}
           </p>
           <p className="mt-1 text-xs text-ink-faint">Disbursement amount</p>
