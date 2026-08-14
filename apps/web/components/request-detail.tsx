@@ -252,7 +252,7 @@ function ApproverRoster({
 }) {
   if (approvers.isPending) {
     return (
-      <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+      <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
         {Array.from({ length: 3 }).map((_, i) => (
           <li key={i} className="flex items-center justify-between px-5 py-3.5">
             <Skeleton className="h-4 w-48 rounded" />
@@ -282,14 +282,14 @@ function ApproverRoster({
 
   if (rows.length === 0) {
     return (
-      <p className="rounded-xl border border-line bg-canvas-raised px-5 py-4 text-sm text-ink-muted">
+      <p className="rounded-card border-2 border-ink bg-paper-raised px-5 py-4 text-sm text-ink-muted shadow-brutal">
         This treasury has no approvers configured yet.
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {rows.map(({ address, inSet }) => {
         const hasApproved = approved.includes(address);
         return (
@@ -297,12 +297,12 @@ function ApproverRoster({
             <div className="flex min-w-0 items-center gap-2">
               <CopyAddress address={address} />
               {address === requester && (
-                <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Requester
                 </span>
               )}
               {!inSet && (
-                <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Former approver
                 </span>
               )}
