@@ -577,7 +577,7 @@ function RequestsSection({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold text-ink">Requests</h2>
+        <h2 className="font-display text-2xl text-ink">Requests</h2>
         {canSubmit && (
           <PrimaryButton onClick={() => setCreating(true)}>
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
@@ -611,7 +611,7 @@ function RequestsSection({
       )}
 
       {requests.isSuccess && requests.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {requests.data.map((request) => (
             <RequestRow
               key={request.requestId}
@@ -708,7 +708,7 @@ function RequestRow({
 
 function RequestsSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="flex items-center justify-between px-6 py-5">
           <div className="space-y-2">
