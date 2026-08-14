@@ -17,9 +17,17 @@ body {
 }
 
 .app-root {
+  color-scheme: light;
+  background-color: #eeebe2;
+  color: #14171f;
   --color-ink: 20 23 31;
   --color-ink-muted: 76 78 82;
   --color-ink-faint: 112 110 103;
+}
+
+.app-root body {
+  background-color: #eeebe2;
+  color: #14171f;
 }
 
 /* The marketing (landing) group opts into the light neo-brutalist theme. It

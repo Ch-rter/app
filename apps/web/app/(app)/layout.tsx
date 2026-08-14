@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`app-root ${display.variable} ${body.variable} ${mono.variable}`}>
-      <body className="min-h-screen font-body">
+      <body className="min-h-screen bg-paper font-body text-ink">
         <Providers>
           <a
             href="#app-content"
