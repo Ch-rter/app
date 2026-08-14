@@ -96,7 +96,7 @@ export function Select({
   children: ReactNode;
 }) {
   return (
-    <div className="relative mt-1.5">
+    <div className="relative mt-2">
       <select
         id={id}
         value={value}
@@ -104,12 +104,12 @@ export function Select({
         disabled={disabled}
         aria-invalid={invalid || undefined}
         className={cn(
-          'block w-full appearance-none rounded-lg border bg-canvas-raised py-2 pl-3 pr-9 text-sm text-ink',
-          'transition-colors duration-150',
-          'focus:outline-none focus:ring-1',
+          'block min-h-11 w-full appearance-none rounded-badge border-2 bg-paper-raised py-2.5 pl-3.5 pr-10 text-sm text-ink',
+          'transition-[background-color,box-shadow] duration-150',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-paper',
           invalid
-            ? 'border-danger/60 focus:border-danger focus:ring-danger'
-            : 'border-line hover:border-accent-muted focus:border-accent focus:ring-accent',
+            ? 'border-danger focus:border-danger focus:ring-danger'
+            : 'border-ink hover:bg-white focus:border-ink focus:ring-ledger-gold',
           'disabled:cursor-not-allowed disabled:opacity-50',
         )}
       >
