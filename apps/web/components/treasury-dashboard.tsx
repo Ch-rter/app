@@ -259,7 +259,7 @@ function BalancePanel({
               <button
                 type="button"
                 onClick={() => void balance.refetch()}
-                className="rounded-md text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
               >
                 Retry
               </button>
