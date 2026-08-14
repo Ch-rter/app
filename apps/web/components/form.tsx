@@ -147,9 +147,9 @@ export function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-canvas',
-        'transition-[background-color,transform] duration-150 hover:bg-accent-hover active:translate-y-[0.5px]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+        'inline-flex min-h-10 items-center justify-center gap-2 rounded-card border-2 border-ink bg-ledger-gold px-5 text-sm font-medium text-ink shadow-brutal',
+        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         'disabled:cursor-not-allowed disabled:opacity-60',
       )}
     >
@@ -179,9 +179,9 @@ export function SecondaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'inline-flex h-9 items-center justify-center rounded-lg border border-line px-4 text-sm font-medium text-ink',
-        'transition-[color,background-color,border-color,transform] duration-150 hover:border-accent-muted hover:bg-canvas-overlay active:translate-y-[0.5px]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+        'inline-flex min-h-10 items-center justify-center rounded-card border-2 border-ink bg-paper-raised px-4 text-sm font-medium text-ink shadow-brutal',
+        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         'disabled:cursor-not-allowed disabled:opacity-50',
       )}
     >
