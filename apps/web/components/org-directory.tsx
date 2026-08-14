@@ -112,11 +112,11 @@ function OrgRow({ org }: { org: Org }) {
     <li>
       <Link
         href={`/org/${org.treasuryAddress}`}
-        className="group flex items-center gap-4 px-6 py-5 transition-colors duration-150 hover:bg-canvas-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent first:rounded-t-xl last:rounded-b-xl"
+        className="group flex items-center gap-4 px-4 py-5 transition-colors duration-150 hover:bg-ledger-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink sm:px-6"
       >
         {/* Org initial avatar */}
         <span
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-muted text-sm font-semibold text-accent"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-ledger-gold font-display text-base text-ink shadow-[2px_2px_0_#14171F]"
           aria-hidden
         >
           {org.name.charAt(0).toUpperCase()}
@@ -124,10 +124,10 @@ function OrgRow({ org }: { org: Org }) {
 
         {/* Name + admin */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-ink group-hover:text-accent transition-colors duration-150">
+          <p className="truncate font-display text-lg text-ink transition-colors duration-150">
             {org.name}
           </p>
-          <p className="mt-0.5 font-mono text-xs text-ink-faint">
+          <p className="mt-1 font-mono text-xs text-ink-muted">
             {truncateAddress(org.adminAddress)}
           </p>
         </div>
