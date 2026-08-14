@@ -311,10 +311,10 @@ function SummaryChip({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs',
+        'inline-flex items-center gap-1.5 rounded-pill border-2 border-ink bg-paper-raised px-3 py-1.5 text-xs text-ink',
         tone === 'info'
-          ? 'border-info/30 bg-info/10 text-info'
-          : 'border-line bg-canvas-overlay text-ink-muted',
+          ? 'text-ink'
+          : 'text-ink-muted',
       )}
     >
       {value === null ? (
@@ -323,7 +323,7 @@ function SummaryChip({
         <span
           className={cn(
             'font-mono font-medium tabular-nums',
-            tone === 'info' ? 'text-info' : 'text-ink',
+            'text-ink',
           )}
         >
           {value}
