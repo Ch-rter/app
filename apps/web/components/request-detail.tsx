@@ -345,8 +345,8 @@ function RequestDetailSkeleton() {
         </div>
         <Skeleton className="h-9 w-40 rounded-lg" />
       </header>
-      <div className="rounded-xl border border-line bg-canvas-raised">
-        <div className="divide-y divide-line">
+      <div className="overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
+        <div className="divide-y-2 divide-ink">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between px-5 py-4">
               <Skeleton className="h-4 w-24 rounded" />
@@ -357,7 +357,7 @@ function RequestDetailSkeleton() {
       </div>
       <div className="space-y-4">
         <Skeleton className="h-6 w-32 rounded" />
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {Array.from({ length: 3 }).map((_, i) => (
             <li key={i} className="flex items-center justify-between px-5 py-3.5">
               <Skeleton className="h-4 w-48 rounded" />
