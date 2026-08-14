@@ -99,7 +99,7 @@ export function OrgDirectory() {
 
 function OrgList({ orgs }: { orgs: Org[] }) {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {orgs.map((org) => (
         <OrgRow key={org.id} org={org} />
       ))}
@@ -158,7 +158,7 @@ function OrgRow({ org }: { org: Org }) {
 
 function OrgListSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="flex items-center gap-4 px-6 py-5">
           <Skeleton className="h-9 w-9 shrink-0 rounded-lg" />
