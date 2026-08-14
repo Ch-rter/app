@@ -157,8 +157,8 @@ function RequestBody({
       </header>
 
       {/* Detail fields */}
-      <section className="rounded-xl border border-line bg-canvas-raised">
-        <dl className="divide-y divide-line">
+      <section className="overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
+        <dl className="divide-y-2 divide-ink">
           <DetailRow label="Recipient">
             <CopyAddress address={request.recipient} />
           </DetailRow>
@@ -183,7 +183,7 @@ function RequestBody({
       {/* Approvals */}
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold text-ink">Approvals</h2>
+          <h2 className="font-display text-2xl text-ink">Approvals</h2>
           <ApprovalProgress
             approvals={request.approvals.length}
             threshold={threshold.data ?? null}
@@ -197,7 +197,7 @@ function RequestBody({
         />
 
         {isPending && walletAddress !== null && (
-          <div className="flex items-center justify-end gap-3 rounded-xl border border-line bg-canvas-raised px-5 py-4">
+          <div className="flex flex-col items-stretch justify-end gap-4 rounded-card border-2 border-ink bg-ledger-gold/25 px-5 py-4 shadow-brutal sm:flex-row sm:items-center">
             <span className="mr-auto text-sm text-ink-muted">
               {isApprover
                 ? request.approvals.includes(walletAddress)
@@ -219,7 +219,7 @@ function RequestBody({
         )}
 
         {isPending && walletAddress === null && (
-          <p className="rounded-xl border border-line bg-canvas px-5 py-4 text-sm text-ink-muted">
+          <p className="rounded-card border-2 border-ink bg-paper-raised px-5 py-4 text-sm text-ink-muted shadow-brutal">
             Connect a wallet to approve, reject, or cancel this request.
           </p>
         )}
