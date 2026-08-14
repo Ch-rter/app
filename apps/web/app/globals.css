@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  @apply bg-canvas text-ink antialiased;
+  @apply bg-paper text-ink antialiased;
 }
 
 .app-root {
