@@ -38,13 +38,13 @@ export function CopyAddress({
       aria-label={copied ? 'Address copied' : `Copy address ${address}`}
       className={cn(
         'group inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-2 py-1 font-mono text-xs text-ink-muted',
-        'transition-[background-color,transform] duration-150 hover:bg-canvas-overlay hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5',
+        'transition-[background-color,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink',
         className,
       )}
     >
       <span>{truncateAddress(address, 6, 6)}</span>
-      <span className="text-ink-faint transition-colors duration-150 group-hover:text-accent" aria-hidden>
+      <span className="text-ink-faint transition-colors duration-150 group-hover:text-ink" aria-hidden>
         {copied ? (
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
             <path d="M13 4.5 6.5 11 3 7.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

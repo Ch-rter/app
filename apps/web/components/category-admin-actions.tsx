@@ -58,7 +58,7 @@ export function CategoryAdminActions({
       <button
         type="button"
         onClick={() => setEditing(true)}
-        className="rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+        className="rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       >
         Edit
       </button>

@@ -77,7 +77,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
           >
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
               <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
