@@ -432,16 +432,16 @@ function AllocationBar({ categories }: { categories: Category[] }) {
 
   // A small fixed cycle of accent-family tints keeps adjacent segments legible
   // without introducing a second hue — the palette stays teal end to end.
-  const tints = ['bg-accent', 'bg-accent/70', 'bg-accent/45', 'bg-info/60', 'bg-info/40'];
+  const tints = ['bg-ledger-gold', 'bg-ledger-gold/80', 'bg-ledger-gold/60', 'bg-ledger-gold/40'];
 
   return (
     <div className="space-y-2">
-      <div className="flex h-2.5 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight">
+      <div className="flex h-4 gap-0.5 overflow-hidden rounded-pill border-2 border-ink bg-paper-raised p-0.5">
         {segments.map((seg, i) => (
           <div
             key={seg.categoryId}
             className={cn(
-              'h-full first:rounded-l-full last:rounded-r-full',
+              'h-full first:rounded-l-pill last:rounded-r-pill',
               tints[i % tints.length],
               !seg.active && 'opacity-40',
             )}
@@ -453,7 +453,7 @@ function AllocationBar({ categories }: { categories: Category[] }) {
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         {segments.map((seg, i) => (
           <span key={seg.categoryId} className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
-            <span className={cn('h-2 w-2 rounded-full', tints[i % tints.length], !seg.active && 'opacity-40')} aria-hidden />
+            <span className={cn('h-2.5 w-2.5 rounded-sm border border-ink', tints[i % tints.length], !seg.active && 'opacity-40')} aria-hidden />
             {seg.name}
             <span className="font-mono tabular-nums text-ink-faint">{Math.round(seg.pct)}%</span>
           </span>
