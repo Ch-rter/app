@@ -33,7 +33,7 @@ export function WalletButton() {
           className={cn(
             'inline-flex min-h-10 items-center gap-2 rounded-card border-2 border-ink px-4 text-sm font-medium',
             'bg-ledger-gold text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150',
-            'hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+            'hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
             'active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised',
             'disabled:cursor-not-allowed disabled:opacity-60',
@@ -77,7 +77,7 @@ function AccountPill({ address, network }: { address: string; network: string })
         className={cn(
           'inline-flex min-h-10 items-center gap-2 rounded-card border-2 border-ink px-3 text-sm',
           'bg-paper-raised text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150',
-          'hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+          'hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised',
         )}
       >
@@ -106,7 +106,7 @@ function AccountPill({ address, network }: { address: string; network: string })
             onClick={() => void copy()}
             className={cn(
               'inline-flex h-9 flex-1 items-center justify-center rounded-card border-2 border-ink bg-paper-raised px-3 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F]',
-              'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
+              'transition-[background-color,box-shadow,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink',
             )}
           >
