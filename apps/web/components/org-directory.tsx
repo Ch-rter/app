@@ -53,7 +53,7 @@ export function OrgDirectory() {
         </div>
         <Link
           href="/new"
-          className="inline-flex min-h-10 items-center gap-1.5 rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+          className="inline-flex min-h-10 items-center gap-1.5 rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
             <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -82,7 +82,7 @@ export function OrgDirectory() {
           action={
             <Link
               href="/new"
-              className="inline-flex min-h-10 items-center rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="inline-flex min-h-10 items-center rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               Create organization
             </Link>

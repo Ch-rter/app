@@ -79,7 +79,7 @@ export function RequestActions({
             onClick={() => approve.mutate()}
             disabled={approve.isPending}
             className={cn(
-              'rounded-badge border-2 border-ink bg-ledger-gold px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
+              'rounded-badge border-2 border-ink bg-ledger-gold px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
             )}
           >
             {approve.isPending ? '…' : 'Approve'}

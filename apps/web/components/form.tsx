@@ -148,7 +148,7 @@ export function PrimaryButton({
       disabled={disabled}
       className={cn(
         'inline-flex min-h-10 items-center justify-center gap-2 rounded-card border-2 border-ink bg-ledger-gold px-5 text-sm font-medium text-ink shadow-brutal',
-        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         'disabled:cursor-not-allowed disabled:opacity-60',
       )}
