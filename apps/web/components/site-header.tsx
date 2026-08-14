@@ -26,7 +26,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/app"
-            className="hidden rounded-badge px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink sm:inline-flex"
+            className="hidden min-h-10 items-center rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E2B84F] hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised sm:inline-flex"
           >
             Organizations
           </Link>
@@ -34,7 +34,7 @@ export function SiteHeader() {
             href="https://chusdrter.gitbook.io/chusdrter-docs"
             target="_blank"
             rel="noreferrer"
-            className="hidden rounded-badge px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink sm:inline-flex"
+            className="hidden min-h-10 items-center rounded-card border-2 border-ink bg-paper-raised px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-ledger-gold/25 hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised sm:inline-flex"
           >
             Docs <span aria-hidden className="ml-1">↗</span>
           </a>
