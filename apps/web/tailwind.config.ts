@@ -10,9 +10,9 @@ const config: Config = {
       colors: {
         // Charter palette — deep slate canvas with a restrained teal accent.
         canvas: {
-          DEFAULT: '#0b0f14',
-          raised: '#111823',
-          overlay: '#1a2534',
+          DEFAULT: '#EEEBE2',
+          raised: '#FBFAF6',
+          overlay: '#E2DED3',
         },
         // Primary ink. CSS-variable-backed so each root layout owns its value:
         // the dashboard falls back to its light-on-dark text, while the
@@ -21,24 +21,24 @@ const config: Config = {
         // (#e6edf3 / #8b98a9 / #5a6675), so omitting the variable — as the
         // dashboard does — renders it identically.
         ink: {
-          DEFAULT: 'rgb(var(--color-ink, 230 237 243) / <alpha-value>)',
-          muted: 'rgb(var(--color-ink-muted, 139 152 169) / <alpha-value>)',
-          faint: 'rgb(var(--color-ink-faint, 90 102 117) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--color-ink, 20 23 31) / <alpha-value>)',
+          muted: 'rgb(var(--color-ink-muted, 76 78 82) / <alpha-value>)',
+          faint: 'rgb(var(--color-ink-faint, 112 110 103) / <alpha-value>)',
         },
         accent: {
-          DEFAULT: '#2dd4bf',
-          hover: '#5eead4',
-          muted: '#134e4a',
+          DEFAULT: '#D8A93B',
+          hover: '#E2B84F',
+          muted: '#F0DFB2',
         },
         // Info semantic — for neutral status (pending requests, informational badges)
         info: {
-          DEFAULT: '#60a5fa',
-          muted: '#1e3a5f',
+          DEFAULT: '#9A7218',
+          muted: '#F0DFB2',
         },
-        line: '#1e2a3a',
-        danger: '#f87171',
-        warn: '#fbbf24',
-        ok: '#34d399',
+        line: '#14171F',
+        danger: '#B8462F',
+        warn: '#9A7218',
+        ok: '#3F8F5F',
         // Marketing (landing) palette — soft rounded neo-brutalism on light
         // paper. Additive: the dashboard never references these tokens. Gold is
         // the only decorative color; green and red are state-only. The footer
@@ -51,10 +51,10 @@ const config: Config = {
       },
       // Custom shadows for depth and glow effects
       boxShadow: {
-        'inner-highlight': 'inset 0 1px 0 rgba(255, 255, 255, 0.03)',
-        'glow-accent': '0 0 12px rgba(45, 212, 191, 0.2)',
-        'glow-warn': '0 0 8px rgba(251, 191, 36, 0.4)',
-        'glow-danger': '0 0 12px rgba(248, 113, 113, 0.15)',
+        'inner-highlight': 'none',
+        'glow-accent': 'none',
+        'glow-warn': 'none',
+        'glow-danger': 'none',
         // Neo-brutalist offset shadows for the marketing surfaces: a hard ink
         // edge with no blur. Hover collapses the 4px offset toward the surface.
         brutal: '4px 4px 0 #14171F',
