@@ -78,7 +78,7 @@ export function SubmitRequestModal({
     >
       {active.length === 0 ? (
         <div className="space-y-5">
-          <p className="rounded-lg border border-line bg-canvas px-4 py-3 text-sm text-ink-muted">
+          <p className="rounded-badge border-2 border-ink bg-canvas-overlay px-4 py-3 text-sm text-ink-muted">
             There are no active categories to request against. Ask an admin to
             create one or resume a paused category first.
           </p>
