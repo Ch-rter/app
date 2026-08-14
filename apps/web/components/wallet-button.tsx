@@ -31,10 +31,11 @@ export function WalletButton() {
           onClick={() => void connect()}
           disabled={connecting}
           className={cn(
-            'inline-flex h-9 items-center gap-2 rounded-lg px-4 text-sm font-medium',
-            'bg-accent text-canvas transition-colors duration-150',
-            'hover:bg-accent-hover',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+            'inline-flex min-h-10 items-center gap-2 rounded-card border-2 border-ink px-4 text-sm font-medium',
+            'bg-ledger-gold text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150',
+            'hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+            'active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised',
             'disabled:cursor-not-allowed disabled:opacity-60',
           )}
         >
