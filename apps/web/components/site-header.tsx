@@ -23,7 +23,23 @@ export function SiteHeader() {
           <span className="font-display text-lg text-ink">Charter</span>
         </Link>
 
-        <WalletButton />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/app"
+            className="hidden rounded-badge px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink sm:inline-flex"
+          >
+            Organizations
+          </Link>
+          <a
+            href="https://chusdrter.gitbook.io/chusdrter-docs"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-badge px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-canvas-overlay hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink sm:inline-flex"
+          >
+            Docs <span aria-hidden className="ml-1">↗</span>
+          </a>
+          <WalletButton />
+        </div>
       </div>
     </header>
   );
