@@ -243,14 +243,9 @@ function BalancePanel({
   approverCount: number | null;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-canvas-raised to-canvas-raised/95 px-6 py-6 shadow-inner-highlight">
-      {/* Decorative accent glow behind the figure. Collapses under reduced-transparency. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(45,212,191,0.12),transparent_70%)] blur-2xl [@media(prefers-reduced-transparency:reduce)]:hidden"
-      />
+    <section className="relative overflow-hidden rounded-card border-2 border-ink bg-ledger-gold px-5 py-6 shadow-brutal sm:px-7 sm:py-7">
       <div className="relative">
-        <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
+        <p className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-ink">
           Treasury balance
         </p>
         <div className="mt-2">
@@ -272,12 +267,12 @@ function BalancePanel({
           )}
 
           {balance.isSuccess && (
-            <p className="font-mono text-4xl font-semibold leading-none tracking-tight tabular-nums text-ink">
+            <p className="font-mono text-4xl font-medium leading-none tabular-nums text-ink sm:text-5xl">
               {formatAmount(balance.data)}
             </p>
           )}
         </div>
-        <p className="mt-2 text-xs text-ink-muted">Live from the treasury contract.</p>
+        <p className="mt-3 text-xs text-ink">Live from the treasury contract.</p>
 
         {/* At-a-glance treasury state. */}
         <div className="mt-5 flex flex-wrap gap-2">
