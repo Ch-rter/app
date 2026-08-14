@@ -141,7 +141,7 @@ function CategoryForm({
       <div>
         <Label htmlFor="category-name">Name</Label>
         {isEdit ? (
-          <p className="mt-1.5 rounded-lg border border-line bg-canvas px-3 py-2 text-sm text-ink-muted">
+          <p className="mt-2 rounded-badge border-2 border-ink bg-canvas-overlay px-3.5 py-2.5 text-sm text-ink-muted">
             {mode.category.name}
           </p>
         ) : (
@@ -175,7 +175,7 @@ function CategoryForm({
       </div>
 
       {bannerError !== null && (
-        <p role="alert" className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
+        <p role="alert" className="rounded-badge border-2 border-danger bg-danger/10 px-4 py-3 text-sm text-danger">
           {bannerError}
         </p>
       )}

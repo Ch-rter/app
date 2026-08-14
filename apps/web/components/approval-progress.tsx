@@ -36,16 +36,16 @@ export function ApprovalProgress({
 
   return (
     <span className={cn('inline-flex items-center gap-2', className)}>
-      <span className="flex items-center gap-0.5" aria-hidden>
+      <span className="flex h-4 items-center gap-0.5 rounded-pill border-2 border-ink bg-paper-raised p-0.5" aria-hidden>
         {Array.from({ length: threshold }).map((_, i) => (
           <span
             key={i}
             className={cn(
-              'h-1.5 w-4 rounded-full transition-colors duration-150',
+              'h-full w-4 first:rounded-l-pill last:rounded-r-pill transition-colors duration-150',
               i < filled
-                ? met
-                  ? 'bg-ok shadow-[0_0_6px_rgba(52,211,153,0.45)]'
-                  : 'bg-accent'
+                ? met && i === threshold - 1
+                  ? 'bg-signal-green'
+                  : 'bg-ledger-gold'
                 : 'bg-canvas-overlay',
             )}
           />

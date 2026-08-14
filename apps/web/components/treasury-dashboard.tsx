@@ -122,11 +122,11 @@ export function TreasuryDashboard({ treasury }: { treasury: string }) {
   const isAdmin = address !== null && adminAddress !== null && address === adminAddress;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <nav>
         <Link
           href="/app"
-          className="inline-flex items-center gap-1.5 rounded text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-3 py-2 text-sm font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
             <path d="M10 4 6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -197,15 +197,15 @@ function OrgHeader({
   }
 
   return (
-    <header className="flex items-start gap-4">
+    <header className="flex items-start gap-4 border-b-2 border-ink pb-8">
       <span
-        className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-muted text-lg font-semibold text-accent"
+        className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-card border-2 border-ink bg-ledger-gold font-display text-xl text-ink shadow-brutal"
         aria-hidden
       >
         {org.data.name.charAt(0).toUpperCase()}
       </span>
       <div className="min-w-0 space-y-2">
-        <h1 className="truncate text-2xl font-semibold text-ink">{org.data.name}</h1>
+        <h1 className="truncate font-display text-4xl leading-none text-ink">{org.data.name}</h1>
         <dl className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs">
           <div className="flex items-center gap-2">
             <dt className="text-ink-faint">Treasury</dt>
@@ -243,14 +243,9 @@ function BalancePanel({
   approverCount: number | null;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-canvas-raised to-canvas-raised/95 px-6 py-6 shadow-inner-highlight">
-      {/* Decorative accent glow behind the figure. Collapses under reduced-transparency. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(45,212,191,0.12),transparent_70%)] blur-2xl [@media(prefers-reduced-transparency:reduce)]:hidden"
-      />
+    <section className="relative overflow-hidden rounded-card border-2 border-ink bg-ledger-gold px-5 py-6 shadow-brutal sm:px-7 sm:py-7">
       <div className="relative">
-        <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
+        <p className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-ink">
           Treasury balance
         </p>
         <div className="mt-2">
@@ -264,7 +259,7 @@ function BalancePanel({
               <button
                 type="button"
                 onClick={() => void balance.refetch()}
-                className="rounded-md text-xs font-medium text-accent transition-colors duration-150 hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
               >
                 Retry
               </button>
@@ -272,12 +267,12 @@ function BalancePanel({
           )}
 
           {balance.isSuccess && (
-            <p className="font-mono text-4xl font-semibold leading-none tracking-tight tabular-nums text-ink">
+            <p className="font-mono text-4xl font-medium leading-none tabular-nums text-ink sm:text-5xl">
               {formatAmount(balance.data)}
             </p>
           )}
         </div>
-        <p className="mt-2 text-xs text-ink-muted">Live from the treasury contract.</p>
+        <p className="mt-3 text-xs text-ink">Live from the treasury contract.</p>
 
         {/* At-a-glance treasury state. */}
         <div className="mt-5 flex flex-wrap gap-2">
@@ -316,10 +311,10 @@ function SummaryChip({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs',
+        'inline-flex items-center gap-1.5 rounded-pill border-2 border-ink bg-paper-raised px-3 py-1.5 text-xs text-ink',
         tone === 'info'
-          ? 'border-info/30 bg-info/10 text-info'
-          : 'border-line bg-canvas-overlay text-ink-muted',
+          ? 'text-ink'
+          : 'text-ink-muted',
       )}
     >
       {value === null ? (
@@ -328,7 +323,7 @@ function SummaryChip({
         <span
           className={cn(
             'font-mono font-medium tabular-nums',
-            tone === 'info' ? 'text-info' : 'text-ink',
+            'text-ink',
           )}
         >
           {value}
@@ -361,7 +356,7 @@ function CategoriesSection({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold text-ink">Budget categories</h2>
+        <h2 className="font-display text-2xl text-ink">Budget categories</h2>
         {canManage && (
           <PrimaryButton onClick={() => setCreating(true)}>
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
@@ -399,7 +394,7 @@ function CategoriesSection({
       )}
 
       {categories.isSuccess && categories.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {categories.data.map((category) => (
             <CategoryRow
               key={category.categoryId}
@@ -437,16 +432,16 @@ function AllocationBar({ categories }: { categories: Category[] }) {
 
   // A small fixed cycle of accent-family tints keeps adjacent segments legible
   // without introducing a second hue — the palette stays teal end to end.
-  const tints = ['bg-accent', 'bg-accent/70', 'bg-accent/45', 'bg-info/60', 'bg-info/40'];
+  const tints = ['bg-ledger-gold', 'bg-ledger-gold/80', 'bg-ledger-gold/60', 'bg-ledger-gold/40'];
 
   return (
     <div className="space-y-2">
-      <div className="flex h-2.5 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight">
+      <div className="flex h-4 gap-0.5 overflow-hidden rounded-pill border-2 border-ink bg-paper-raised p-0.5">
         {segments.map((seg, i) => (
           <div
             key={seg.categoryId}
             className={cn(
-              'h-full first:rounded-l-full last:rounded-r-full',
+              'h-full first:rounded-l-pill last:rounded-r-pill',
               tints[i % tints.length],
               !seg.active && 'opacity-40',
             )}
@@ -458,7 +453,7 @@ function AllocationBar({ categories }: { categories: Category[] }) {
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         {segments.map((seg, i) => (
           <span key={seg.categoryId} className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
-            <span className={cn('h-2 w-2 rounded-full', tints[i % tints.length], !seg.active && 'opacity-40')} aria-hidden />
+            <span className={cn('h-2.5 w-2.5 rounded-sm border border-ink', tints[i % tints.length], !seg.active && 'opacity-40')} aria-hidden />
             {seg.name}
             <span className="font-mono tabular-nums text-ink-faint">{Math.round(seg.pct)}%</span>
           </span>
@@ -488,7 +483,7 @@ function CategoryRow({
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-medium text-ink">{category.name}</span>
           {!category.active && (
-            <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+            <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
               Paused
             </span>
           )}
@@ -508,7 +503,7 @@ function CategoryRow({
 
       <div className="mt-2.5 flex items-center gap-3">
         <div
-          className="h-2 flex-1 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight"
+          className="h-4 flex-1 overflow-hidden rounded-pill border-2 border-ink bg-paper-raised p-0.5"
           role="progressbar"
           aria-valuenow={Math.round(pct)}
           aria-valuemin={0}
@@ -516,12 +511,7 @@ function CategoryRow({
           aria-label={`${category.name} cap usage`}
         >
           <div
-            className={cn(
-              'h-full rounded-full bg-gradient-to-r transition-[width] duration-300 ease-out motion-reduce:transition-none',
-              nearCap
-                ? 'from-warn to-warn shadow-glow-warn'
-                : 'from-accent to-accent-hover',
-            )}
+            className="h-full rounded-pill bg-ledger-gold transition-[width] duration-300 ease-out motion-reduce:transition-none"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -535,7 +525,7 @@ function CategoryRow({
 
 function CategoriesSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="space-y-2.5 px-6 py-5">
           <div className="flex items-center justify-between">
@@ -587,7 +577,7 @@ function RequestsSection({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold text-ink">Requests</h2>
+        <h2 className="font-display text-2xl text-ink">Requests</h2>
         {canSubmit && (
           <PrimaryButton onClick={() => setCreating(true)}>
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
@@ -621,7 +611,7 @@ function RequestsSection({
       )}
 
       {requests.isSuccess && requests.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {requests.data.map((request) => (
             <RequestRow
               key={request.requestId}
@@ -667,12 +657,12 @@ function RequestRow({
   const isPending = request.status === 'Pending';
 
   return (
-    <li className="flex items-center justify-between gap-4 px-6 py-5">
+    <li className="flex flex-col items-stretch justify-between gap-4 px-4 py-5 sm:flex-row sm:items-center sm:px-6">
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2.5">
           <Link
             href={`/org/${treasuryId}/requests/${request.requestId}`}
-            className="truncate rounded text-sm font-medium text-ink transition-colors duration-150 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="truncate rounded-badge font-display text-lg text-ink underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
           >
             {categoryName}
           </Link>
@@ -691,7 +681,7 @@ function RequestRow({
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-4">
+      <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
         <div className="flex flex-col items-end gap-1">
           <span className="font-mono text-sm font-medium tabular-nums text-ink">
             {formatAmount(request.amount)}
@@ -718,7 +708,7 @@ function RequestRow({
 
 function RequestsSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="flex items-center justify-between px-6 py-5">
           <div className="space-y-2">

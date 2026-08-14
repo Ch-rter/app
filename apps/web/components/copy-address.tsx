@@ -37,9 +37,9 @@ export function CopyAddress({
       title={address}
       aria-label={copied ? 'Address copied' : `Copy address ${address}`}
       className={cn(
-        'group inline-flex items-center gap-1.5 rounded-md font-mono text-ink-muted',
-        'transition-colors duration-150 hover:text-ink',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+        'group inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-2 py-1 font-mono text-xs text-ink-muted',
+        'transition-[background-color,transform] duration-150 hover:bg-canvas-overlay hover:text-ink hover:translate-x-0.5 hover:translate-y-0.5',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink',
         className,
       )}
     >

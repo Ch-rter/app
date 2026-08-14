@@ -25,32 +25,35 @@ export function OrgDirectory() {
   return (
     <section>
       {/* Orientation band: one line on what Charter is, for first-time visitors. */}
-      <div className="mb-6 flex items-start gap-3 rounded-xl border border-line bg-canvas-raised px-5 py-4 shadow-inner-highlight">
+      <div className="mb-8 flex items-start gap-4 rounded-card border-2 border-ink bg-ledger-gold px-5 py-5 shadow-brutal sm:px-6">
         <span
-          className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-muted text-accent"
+          className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-paper-raised text-ink"
           aria-hidden
         >
           <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
             <path d="M8 1 2 4v4c0 3.3 2.6 6.3 6 7 3.4-.7 6-3.7 6-7V4L8 1zm0 2.2 4 2v2.8c0 2.3-1.7 4.4-4 5-2.3-.6-4-2.7-4-5V5.2l4-2z" />
           </svg>
         </span>
-        <p className="text-sm leading-relaxed text-ink-muted">
+        <p className="max-w-3xl text-sm leading-relaxed text-ink">
           <span className="font-medium text-ink">Charter</span> is a treasury operations
           layer for Stellar organizations. Set budget caps, route disbursements through
           approvals, and settle on-chain.
         </p>
       </div>
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-xl font-semibold text-ink">Organizations</h1>
-          <p className="mt-0.5 text-sm text-ink-muted">
-            Stellar treasuries indexed on-chain
+          <p className="mb-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-ink-muted">
+            Treasury directory
+          </p>
+          <h1 className="font-display text-4xl leading-none text-ink sm:text-[40px]">Organizations</h1>
+          <p className="mt-3 text-sm text-ink-muted">
+            Policy-controlled Stellar treasuries indexed on-chain.
           </p>
         </div>
         <Link
           href="/new"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-4 text-sm font-medium text-canvas transition-[background-color,transform] duration-150 hover:bg-accent-hover active:translate-y-[0.5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          className="inline-flex min-h-10 items-center gap-1.5 rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
             <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -79,7 +82,7 @@ export function OrgDirectory() {
           action={
             <Link
               href="/new"
-              className="inline-flex h-9 items-center rounded-lg bg-accent px-4 text-sm font-medium text-canvas transition-[background-color,transform] duration-150 hover:bg-accent-hover active:translate-y-[0.5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+              className="inline-flex min-h-10 items-center rounded-card border-2 border-ink bg-ledger-gold px-4 text-sm font-medium text-ink shadow-brutal transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               Create organization
             </Link>
@@ -96,7 +99,7 @@ export function OrgDirectory() {
 
 function OrgList({ orgs }: { orgs: Org[] }) {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {orgs.map((org) => (
         <OrgRow key={org.id} org={org} />
       ))}
@@ -109,11 +112,11 @@ function OrgRow({ org }: { org: Org }) {
     <li>
       <Link
         href={`/org/${org.treasuryAddress}`}
-        className="group flex items-center gap-4 px-6 py-5 transition-colors duration-150 hover:bg-canvas-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent first:rounded-t-xl last:rounded-b-xl"
+        className="group flex items-center gap-4 px-4 py-5 transition-colors duration-150 hover:bg-ledger-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink sm:px-6"
       >
         {/* Org initial avatar */}
         <span
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-muted text-sm font-semibold text-accent"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-badge border-2 border-ink bg-ledger-gold font-display text-base text-ink shadow-[2px_2px_0_#14171F]"
           aria-hidden
         >
           {org.name.charAt(0).toUpperCase()}
@@ -121,10 +124,10 @@ function OrgRow({ org }: { org: Org }) {
 
         {/* Name + admin */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-ink group-hover:text-accent transition-colors duration-150">
+          <p className="truncate font-display text-lg text-ink transition-colors duration-150">
             {org.name}
           </p>
-          <p className="mt-0.5 font-mono text-xs text-ink-faint">
+          <p className="mt-1 font-mono text-xs text-ink-muted">
             {truncateAddress(org.adminAddress)}
           </p>
         </div>
@@ -155,7 +158,7 @@ function OrgRow({ org }: { org: Org }) {
 
 function OrgListSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="flex items-center gap-4 px-6 py-5">
           <Skeleton className="h-9 w-9 shrink-0 rounded-lg" />

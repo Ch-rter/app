@@ -35,12 +35,12 @@ export function FieldError({ children }: { children: ReactNode }) {
 /** The shared input treatment: dark surface, accent focus ring, mono opt-in. */
 const inputClass = (mono?: boolean, invalid?: boolean) =>
   cn(
-    'mt-1.5 block w-full rounded-lg border bg-canvas-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint',
-    'transition-colors duration-150',
-    'focus:outline-none focus:ring-1',
+    'mt-2 block min-h-11 w-full rounded-badge border-2 bg-paper-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint',
+    'transition-[background-color,box-shadow] duration-150',
+    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-paper',
     invalid
-      ? 'border-danger/60 focus:border-danger focus:ring-danger'
-      : 'border-line hover:border-accent-muted focus:border-accent focus:ring-accent',
+      ? 'border-danger focus:border-danger focus:ring-danger'
+      : 'border-ink hover:bg-white focus:border-ink focus:ring-ledger-gold',
     'disabled:cursor-not-allowed disabled:opacity-50',
     mono && 'font-mono',
   );
@@ -96,7 +96,7 @@ export function Select({
   children: ReactNode;
 }) {
   return (
-    <div className="relative mt-1.5">
+    <div className="relative mt-2">
       <select
         id={id}
         value={value}
@@ -104,12 +104,12 @@ export function Select({
         disabled={disabled}
         aria-invalid={invalid || undefined}
         className={cn(
-          'block w-full appearance-none rounded-lg border bg-canvas-raised py-2 pl-3 pr-9 text-sm text-ink',
-          'transition-colors duration-150',
-          'focus:outline-none focus:ring-1',
+          'block min-h-11 w-full appearance-none rounded-badge border-2 bg-paper-raised py-2.5 pl-3.5 pr-10 text-sm text-ink',
+          'transition-[background-color,box-shadow] duration-150',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-paper',
           invalid
-            ? 'border-danger/60 focus:border-danger focus:ring-danger'
-            : 'border-line hover:border-accent-muted focus:border-accent focus:ring-accent',
+            ? 'border-danger focus:border-danger focus:ring-danger'
+            : 'border-ink hover:bg-white focus:border-ink focus:ring-ledger-gold',
           'disabled:cursor-not-allowed disabled:opacity-50',
         )}
       >
@@ -147,9 +147,9 @@ export function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-canvas',
-        'transition-[background-color,transform] duration-150 hover:bg-accent-hover active:translate-y-[0.5px]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+        'inline-flex min-h-10 items-center justify-center gap-2 rounded-card border-2 border-ink bg-ledger-gold px-5 text-sm font-medium text-ink shadow-brutal',
+        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         'disabled:cursor-not-allowed disabled:opacity-60',
       )}
     >
@@ -179,9 +179,9 @@ export function SecondaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'inline-flex h-9 items-center justify-center rounded-lg border border-line px-4 text-sm font-medium text-ink',
-        'transition-[color,background-color,border-color,transform] duration-150 hover:border-accent-muted hover:bg-canvas-overlay active:translate-y-[0.5px]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+        'inline-flex min-h-10 items-center justify-center rounded-card border-2 border-ink bg-paper-raised px-4 text-sm font-medium text-ink shadow-brutal',
+        'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed active:translate-x-0.5 active:translate-y-0.5 active:shadow-brutal-pressed',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         'disabled:cursor-not-allowed disabled:opacity-50',
       )}
     >

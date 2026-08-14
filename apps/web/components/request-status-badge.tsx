@@ -13,10 +13,10 @@ import type { RequestStatus } from '../lib/indexer';
 import { cn } from '../lib/format';
 
 const STYLES: Record<RequestStatus, string> = {
-  Pending: 'border-info/30 bg-info/10 text-info',
-  Executed: 'border-ok/30 bg-ok/10 text-ok',
-  Rejected: 'border-danger/30 bg-danger/10 text-danger',
-  Cancelled: 'border-line bg-canvas-overlay text-ink-faint',
+  Pending: 'border-ink bg-ledger-gold/35 text-ink',
+  Executed: 'border-ink bg-signal-green text-white',
+  Rejected: 'border-ink bg-flag-red text-white',
+  Cancelled: 'border-ink bg-canvas-overlay text-ink-muted',
 };
 
 export function RequestStatusBadge({
@@ -29,7 +29,7 @@ export function RequestStatusBadge({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium',
+        'inline-flex items-center rounded-pill border-2 px-2.5 py-0.5 text-[11px] font-medium',
         STYLES[status],
         className,
       )}

@@ -57,7 +57,7 @@ export function RequestDetail({
     <nav>
       <Link
         href={`/org/${treasury}`}
-        className="inline-flex items-center gap-1.5 rounded text-sm text-ink-muted transition-colors duration-150 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="inline-flex items-center gap-1.5 rounded-badge border-2 border-ink bg-paper-raised px-3 py-2 text-sm font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
       >
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
           <path d="M10 4 6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -138,10 +138,10 @@ function RequestBody({
   return (
     <div className="space-y-8">
       {/* Header — identity and headline amount */}
-      <header className="flex flex-wrap items-start justify-between gap-4">
+      <header className="flex flex-wrap items-start justify-between gap-6 border-b-2 border-ink pb-8">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-ink">Request #{request.requestId}</h1>
+            <h1 className="font-display text-4xl leading-none text-ink">Request #{request.requestId}</h1>
             <RequestStatusBadge status={request.status} />
           </div>
           <p className="text-sm text-ink-muted">
@@ -149,7 +149,7 @@ function RequestBody({
           </p>
         </div>
         <div className="text-right">
-          <p className="font-mono text-3xl font-semibold tabular-nums text-ink">
+          <p className="font-mono text-4xl font-medium tabular-nums text-ink">
             {formatAmount(request.amount)}
           </p>
           <p className="mt-1 text-xs text-ink-faint">Disbursement amount</p>
@@ -157,8 +157,8 @@ function RequestBody({
       </header>
 
       {/* Detail fields */}
-      <section className="rounded-xl border border-line bg-canvas-raised">
-        <dl className="divide-y divide-line">
+      <section className="overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
+        <dl className="divide-y-2 divide-ink">
           <DetailRow label="Recipient">
             <CopyAddress address={request.recipient} />
           </DetailRow>
@@ -183,7 +183,7 @@ function RequestBody({
       {/* Approvals */}
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold text-ink">Approvals</h2>
+          <h2 className="font-display text-2xl text-ink">Approvals</h2>
           <ApprovalProgress
             approvals={request.approvals.length}
             threshold={threshold.data ?? null}
@@ -197,7 +197,7 @@ function RequestBody({
         />
 
         {isPending && walletAddress !== null && (
-          <div className="flex items-center justify-end gap-3 rounded-xl border border-line bg-canvas-raised px-5 py-4">
+          <div className="flex flex-col items-stretch justify-end gap-4 rounded-card border-2 border-ink bg-ledger-gold/25 px-5 py-4 shadow-brutal sm:flex-row sm:items-center">
             <span className="mr-auto text-sm text-ink-muted">
               {isApprover
                 ? request.approvals.includes(walletAddress)
@@ -219,7 +219,7 @@ function RequestBody({
         )}
 
         {isPending && walletAddress === null && (
-          <p className="rounded-xl border border-line bg-canvas px-5 py-4 text-sm text-ink-muted">
+          <p className="rounded-card border-2 border-ink bg-paper-raised px-5 py-4 text-sm text-ink-muted shadow-brutal">
             Connect a wallet to approve, reject, or cancel this request.
           </p>
         )}
@@ -252,7 +252,7 @@ function ApproverRoster({
 }) {
   if (approvers.isPending) {
     return (
-      <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+      <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
         {Array.from({ length: 3 }).map((_, i) => (
           <li key={i} className="flex items-center justify-between px-5 py-3.5">
             <Skeleton className="h-4 w-48 rounded" />
@@ -282,14 +282,14 @@ function ApproverRoster({
 
   if (rows.length === 0) {
     return (
-      <p className="rounded-xl border border-line bg-canvas-raised px-5 py-4 text-sm text-ink-muted">
+      <p className="rounded-card border-2 border-ink bg-paper-raised px-5 py-4 text-sm text-ink-muted shadow-brutal">
         This treasury has no approvers configured yet.
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {rows.map(({ address, inSet }) => {
         const hasApproved = approved.includes(address);
         return (
@@ -297,12 +297,12 @@ function ApproverRoster({
             <div className="flex min-w-0 items-center gap-2">
               <CopyAddress address={address} />
               {address === requester && (
-                <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Requester
                 </span>
               )}
               {!inSet && (
-                <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+                <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                   Former approver
                 </span>
               )}
@@ -345,8 +345,8 @@ function RequestDetailSkeleton() {
         </div>
         <Skeleton className="h-9 w-40 rounded-lg" />
       </header>
-      <div className="rounded-xl border border-line bg-canvas-raised">
-        <div className="divide-y divide-line">
+      <div className="overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
+        <div className="divide-y-2 divide-ink">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between px-5 py-4">
               <Skeleton className="h-4 w-24 rounded" />
@@ -357,7 +357,7 @@ function RequestDetailSkeleton() {
       </div>
       <div className="space-y-4">
         <Skeleton className="h-6 w-32 rounded" />
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {Array.from({ length: 3 }).map((_, i) => (
             <li key={i} className="flex items-center justify-between px-5 py-3.5">
               <Skeleton className="h-4 w-48 rounded" />

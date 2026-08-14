@@ -3,16 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   @apply bg-canvas text-ink antialiased;
+}
+
+.app-root {
+  --color-ink: 20 23 31;
+  --color-ink-muted: 76 78 82;
+  --color-ink-faint: 112 110 103;
 }
 
 /* The marketing (landing) group opts into the light neo-brutalist theme. It
@@ -44,19 +51,16 @@ body {
 .shimmer::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  left: 0;
+  width: 35%;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.04) 50%,
-    transparent 100%
-  );
+  background: rgb(251 250 246 / 0.72);
   animation: shimmer 1.6s ease-in-out infinite;
 }
 @keyframes shimmer {
   100% {
-    transform: translateX(100%);
+    transform: translateX(390%);
   }
 }
 
@@ -94,20 +98,20 @@ dialog[open]::backdrop {
 @media (prefers-reduced-transparency: reduce) {
   dialog[open]::backdrop {
     backdrop-filter: none;
-    background-color: rgb(11 15 20 / 0.92);
+    background-color: rgb(20 23 31 / 0.82);
   }
 }
 
-/* Thin, unobtrusive scrollbars that match the dark canvas. */
+/* Thin scrollbars that sit quietly against the warm paper canvas. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1e2a3a transparent;
+  scrollbar-color: #14171f transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #1e2a3a;
+  background-color: #14171f;
   border-radius: 4px;
 }

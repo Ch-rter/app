@@ -44,13 +44,13 @@ function Panel({
   tone?: 'neutral' | 'danger';
 }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-xl border border-line bg-canvas-raised px-6 py-14 text-center">
+    <div className="flex flex-col items-center gap-4 rounded-card border-2 border-ink bg-paper-raised px-6 py-14 text-center shadow-brutal">
       <span
         className={cn(
-          'inline-flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-inset',
+          'inline-flex h-12 w-12 items-center justify-center rounded-badge border-2 border-ink',
           tone === 'danger'
-            ? 'bg-danger/10 text-danger ring-danger/20 shadow-glow-danger'
-            : 'bg-accent-muted text-accent ring-accent/20 shadow-glow-accent',
+            ? 'bg-flag-red/10 text-flag-red'
+            : 'bg-ledger-gold text-ink',
         )}
       >
         {icon}
@@ -126,9 +126,9 @@ export function ErrorState({
         type="button"
         onClick={onRetry}
         className={cn(
-          'inline-flex h-9 items-center rounded-lg border border-line px-4 text-sm font-medium text-ink',
-          'transition-colors duration-150 hover:border-accent-muted hover:bg-canvas-overlay',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas',
+          'inline-flex min-h-10 items-center rounded-card border-2 border-ink bg-paper-raised px-4 text-sm font-medium text-ink shadow-brutal',
+          'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-pressed',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper',
         )}
       >
         Try again
