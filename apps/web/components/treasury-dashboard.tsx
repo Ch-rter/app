@@ -356,7 +356,7 @@ function CategoriesSection({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold text-ink">Budget categories</h2>
+        <h2 className="font-display text-2xl text-ink">Budget categories</h2>
         {canManage && (
           <PrimaryButton onClick={() => setCreating(true)}>
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
@@ -394,7 +394,7 @@ function CategoriesSection({
       )}
 
       {categories.isSuccess && categories.data.length > 0 && (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+        <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
           {categories.data.map((category) => (
             <CategoryRow
               key={category.categoryId}
@@ -530,7 +530,7 @@ function CategoryRow({
 
 function CategoriesSkeleton() {
   return (
-    <ul className="divide-y divide-line rounded-xl border border-line bg-canvas-raised shadow-inner-highlight">
+    <ul className="divide-y-2 divide-ink overflow-hidden rounded-card border-2 border-ink bg-paper-raised shadow-brutal">
       {Array.from({ length: 3 }).map((_, i) => (
         <li key={i} className="space-y-2.5 px-6 py-5">
           <div className="flex items-center justify-between">
