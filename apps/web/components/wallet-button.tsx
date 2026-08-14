@@ -92,22 +92,22 @@ function AccountPill({ address, network }: { address: string; network: string })
         popover="auto"
         id={popoverId}
         className={cn(
-          'mt-2 w-64 rounded-xl border border-line bg-canvas-raised p-3 text-sm shadow-2xl',
+          'mt-2 w-72 rounded-card border-2 border-ink bg-paper-raised p-4 text-sm shadow-brutal',
           // Anchor to the trigger's right edge; the popover sits in the top layer
           // so it is never clipped by the header.
-          'inset-[unset] right-4 top-14 left-[unset]',
+          'inset-[unset] right-4 top-16 left-[unset]',
         )}
       >
-        <p className="text-xs uppercase tracking-wide text-ink-faint">Connected account</p>
-        <p className="mt-1 break-all font-mono text-xs text-ink-muted">{address}</p>
+        <p className="font-display text-base text-ink">Connected account</p>
+        <p className="mt-2 break-all font-mono text-xs leading-relaxed text-ink-muted">{address}</p>
         <div className="mt-3 flex items-center gap-2">
           <button
             type="button"
             onClick={() => void copy()}
             className={cn(
-              'inline-flex h-8 flex-1 items-center justify-center rounded-lg border border-line px-3 text-xs font-medium text-ink',
-              'transition-colors duration-150 hover:bg-canvas-overlay',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+              'inline-flex h-9 flex-1 items-center justify-center rounded-card border-2 border-ink bg-paper-raised px-3 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F]',
+              'transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink',
             )}
           >
             {copied ? 'Copied' : 'Copy address'}
@@ -116,8 +116,8 @@ function AccountPill({ address, network }: { address: string; network: string })
             type="button"
             onClick={() => void disconnect()}
             className={cn(
-              'inline-flex h-8 flex-1 items-center justify-center rounded-lg px-3 text-xs font-medium',
-              'text-danger transition-colors duration-150 hover:bg-danger/10',
+              'inline-flex h-9 flex-1 items-center justify-center rounded-card border-2 border-ink bg-paper-raised px-3 text-xs font-medium shadow-[2px_2px_0_#14171F]',
+              'text-danger transition-[background-color,box-shadow,transform] duration-150 hover:bg-danger/10 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger',
             )}
           >
