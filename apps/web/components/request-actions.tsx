@@ -65,7 +65,7 @@ export function RequestActions({
   if (!canApprove && !isRequester) return null;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex flex-wrap items-center justify-end gap-2">
       {errorText !== null && (
         <span className="mr-1 text-xs text-danger" role="alert">
           {errorText}
@@ -79,8 +79,7 @@ export function RequestActions({
             onClick={() => approve.mutate()}
             disabled={approve.isPending}
             className={cn(
-              'rounded-md px-2 py-1 text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50',
-              'text-accent hover:bg-canvas-overlay hover:text-accent-hover',
+              'rounded-badge border-2 border-ink bg-ledger-gold px-2.5 py-1 text-xs font-medium text-ink shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-accent-hover hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
             )}
           >
             {approve.isPending ? '…' : 'Approve'}
@@ -91,8 +90,7 @@ export function RequestActions({
             onClick={() => reject.mutate()}
             disabled={reject.isPending}
             className={cn(
-              'rounded-md px-2 py-1 text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50',
-              'text-ink-muted hover:bg-canvas-overlay hover:text-danger',
+              'rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-danger shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-danger/10 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
             )}
           >
             {reject.isPending ? '…' : 'Reject'}
@@ -106,8 +104,7 @@ export function RequestActions({
           onClick={() => cancel.mutate()}
           disabled={cancel.isPending}
           className={cn(
-            'rounded-md px-2 py-1 text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50',
-            'text-ink-muted hover:bg-canvas-overlay hover:text-ink',
+            'rounded-badge border-2 border-ink bg-paper-raised px-2.5 py-1 text-xs font-medium text-ink-muted shadow-[2px_2px_0_#14171F] transition-[background-color,box-shadow,transform] duration-150 hover:bg-canvas-overlay hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-50',
           )}
         >
           {cancel.isPending ? '…' : 'Cancel'}
