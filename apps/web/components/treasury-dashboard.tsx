@@ -483,7 +483,7 @@ function CategoryRow({
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-medium text-ink">{category.name}</span>
           {!category.active && (
-            <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+            <span className="rounded-pill border-2 border-ink bg-canvas-overlay px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
               Paused
             </span>
           )}
@@ -503,7 +503,7 @@ function CategoryRow({
 
       <div className="mt-2.5 flex items-center gap-3">
         <div
-          className="h-2 flex-1 overflow-hidden rounded-full bg-canvas-overlay shadow-inner-highlight"
+          className="h-4 flex-1 overflow-hidden rounded-pill border-2 border-ink bg-paper-raised p-0.5"
           role="progressbar"
           aria-valuenow={Math.round(pct)}
           aria-valuemin={0}
@@ -511,12 +511,7 @@ function CategoryRow({
           aria-label={`${category.name} cap usage`}
         >
           <div
-            className={cn(
-              'h-full rounded-full bg-gradient-to-r transition-[width] duration-300 ease-out motion-reduce:transition-none',
-              nearCap
-                ? 'from-warn to-warn shadow-glow-warn'
-                : 'from-accent to-accent-hover',
-            )}
+            className="h-full rounded-pill bg-ledger-gold transition-[width] duration-300 ease-out motion-reduce:transition-none"
             style={{ width: `${pct}%` }}
           />
         </div>
