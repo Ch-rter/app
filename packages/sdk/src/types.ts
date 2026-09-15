@@ -66,65 +66,60 @@ export interface OrgRecord {
 /**
  * Numeric `#[contracterror]` discriminants for the `treasury` contract.
  *
- * NOTE: the app build spec restates the contract's method/type interface but
- * not its error enum, and forbids reading the contract repo. These variants and
- * their ordering mirror `charter-contract`'s declared `#[contracterror]` for
- * this domain; any discriminant that ever drifts is caught by the graceful
- * fallback in {@link treasuryErrorMessage}, so a raw error string is never
- * shown to a user regardless.
+ * Mirrors `charter-contract/contracts/treasury/src/errors.rs` exactly — names,
+ * discriminants, and order. Update both together. Any unknown code still falls
+ * back gracefully in {@link treasuryErrorMessage}.
  */
 export enum TreasuryError {
   AlreadyInitialized = 1,
-  NotAuthorized = 2,
-  NotAnApprover = 3,
-  InvalidThreshold = 4,
-  CategoryNotFound = 5,
-  CategoryInactive = 6,
-  CapExceeded = 7,
-  InsufficientBalance = 8,
-  RequestNotFound = 9,
-  RequestNotPending = 10,
-  AlreadyApproved = 11,
-  InvalidAmount = 12,
-  DuplicateApprover = 13,
-  ApproverNotFound = 14,
+  NotInitialized = 2,
+  NotAdmin = 3,
+  NotApprover = 4,
+  CategoryInactive = 5,
+  CapExceeded = 6,
+  RequestNotPending = 7,
+  InvalidThreshold = 8,
+  AlreadyApproved = 9,
+  NotRequester = 10,
+  InvalidAmount = 11,
 }
 
-/** Numeric `#[contracterror]` discriminants for the `factory` contract. */
+/**
+ * Numeric `#[contracterror]` discriminants for the `factory` contract.
+ *
+ * Mirrors `charter-contract/contracts/factory/src/errors.rs` exactly. Note the
+ * first two discriminants are the reverse of the treasury enum.
+ */
 export enum FactoryError {
-  AlreadyInitialized = 1,
-  NotAuthorized = 2,
-  InvalidThreshold = 3,
-  InvalidWasmHash = 4,
-  OrgNotFound = 5,
+  NotInitialized = 1,
+  AlreadyInitialized = 2,
+  NotDeployer = 3,
+  OrgNotFound = 4,
 }
 
 const TREASURY_ERROR_MESSAGES: Readonly<Record<TreasuryError, string>> = {
   [TreasuryError.AlreadyInitialized]: 'This treasury has already been set up.',
-  [TreasuryError.NotAuthorized]: 'You do not have permission to do this.',
-  [TreasuryError.NotAnApprover]: 'Only a designated approver can act on this request.',
+  [TreasuryError.NotInitialized]: 'This treasury has not been set up yet.',
+  [TreasuryError.NotAdmin]: 'Only the treasury admin can do this.',
+  [TreasuryError.NotApprover]: 'Only a designated approver can act on this request.',
+  [TreasuryError.CategoryInactive]: 'This budget category is inactive and cannot be spent from.',
+  [TreasuryError.CapExceeded]: 'This would exceed the category’s budget cap.',
+  // The contract also raises this for a request id that does not exist.
+  [TreasuryError.RequestNotPending]:
+    'This request no longer exists or has already been executed, rejected, or cancelled.',
   [TreasuryError.InvalidThreshold]:
     'The approval threshold must be at least 1 and no greater than the number of approvers.',
-  [TreasuryError.CategoryNotFound]: 'That budget category no longer exists.',
-  [TreasuryError.CategoryInactive]: 'This budget category is inactive and cannot be spent from.',
-  [TreasuryError.CapExceeded]: 'This request would exceed the category’s remaining budget.',
-  [TreasuryError.InsufficientBalance]:
-    'The treasury does not hold enough funds to cover this request.',
-  [TreasuryError.RequestNotFound]: 'That request no longer exists.',
-  [TreasuryError.RequestNotPending]:
-    'This request has already been executed, rejected, or cancelled.',
   [TreasuryError.AlreadyApproved]: 'You have already approved this request.',
-  [TreasuryError.InvalidAmount]: 'The amount must be greater than zero.',
-  [TreasuryError.DuplicateApprover]: 'That address is already an approver.',
-  [TreasuryError.ApproverNotFound]: 'That address is not currently an approver.',
+  [TreasuryError.NotRequester]: 'Only the person who submitted this request can cancel it.',
+  // The contract also raises this for a missing category or a cap below spent.
+  [TreasuryError.InvalidAmount]:
+    'The amount is invalid, or the budget category does not exist. Amounts must be greater than zero, and a cap cannot be set below what has already been spent.',
 };
 
 const FACTORY_ERROR_MESSAGES: Readonly<Record<FactoryError, string>> = {
+  [FactoryError.NotInitialized]: 'The factory has not been initialized yet.',
   [FactoryError.AlreadyInitialized]: 'The factory has already been initialized.',
-  [FactoryError.NotAuthorized]: 'You do not have permission to deploy a treasury.',
-  [FactoryError.InvalidThreshold]:
-    'The approval threshold must be at least 1 and no greater than the number of approvers.',
-  [FactoryError.InvalidWasmHash]: 'The treasury program reference is invalid.',
+  [FactoryError.NotDeployer]: 'You do not have permission to deploy a treasury.',
   [FactoryError.OrgNotFound]: 'That organization could not be found.',
 };
 
