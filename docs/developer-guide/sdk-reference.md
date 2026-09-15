@@ -88,10 +88,9 @@ signature is `deploy_treasury(name, admin, approvers, threshold, token)` and the
 SDK encodes the call in that contract order. `admin` is also the account that
 authorizes and pays. Because the SDK signs only the transaction envelope, the
 call succeeds only when `admin` is the factory's stored deployer (both must
-authorize). This is the call the new-org form makes.
-Because the treasury's own `initialize` runs as a sub-call that requires the
-admin's authorization, the wallet is asked to sign twice — see [Getting
-Started](../for-organization-admins/getting-started.md).
+authorize). This is the call the new-org form makes; see [Getting
+Started](../for-organization-admins/getting-started.md) for what that means for
+admins today.
 
 ### Reads
 

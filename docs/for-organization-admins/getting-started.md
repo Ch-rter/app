@@ -47,13 +47,18 @@ four things to fill in:
 Submit with **Deploy treasury**. The button shows "Deploying…" while the
 transaction is in flight.
 
-### This transaction needs two signatures
+### Only the factory's deployer can deploy right now
 
-Deploying goes through the factory contract, and it asks your wallet to sign
-**twice** in one flow. That is expected, not a bug. The factory authorizes you
-as the deployer, and the new treasury's own `initialize` step requires the
-admin — you — to authorize it as a sub-call. Approve both prompts. If you only
-approve the first, the deploy will not complete.
+Deploying goes through the factory contract, and the contract requires two
+authorizations: the factory's stored **deployer**, and the new treasury's
+**admin** — the wallet you are connected with. Your wallet signs the transaction
+once, and that one signature covers both only when your wallet *is* the
+factory's deployer.
+
+If you connect any other wallet, the deploy is rejected for missing
+authorization. Until deploying is opened up to other accounts, ask whoever runs
+your Charter factory to deploy the treasury with you as its admin, or use the
+deployer wallet.
 
 When it finishes, Charter sends you to your new organization's page at
 `/org/<treasury address>`. That address is your treasury; bookmark it.

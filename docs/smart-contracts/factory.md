@@ -34,9 +34,11 @@ requiring the admin's signature at the top ties that authorization to the root
 transaction so the sub-call succeeds.
 
 - Panics `NotInitialized` if the factory has not been initialized.
-- The treasury's `initialize` runs as part of this call, so its own panics
-  apply too — for example `InvalidThreshold` if `threshold == 0` or
-  `threshold > approvers.len()`.
+- Panics `TreasuryInitFailed` if the treasury's `initialize` fails for any
+  reason — for example `threshold == 0` or `threshold > approvers.len()`. The
+  treasury's own error code is not passed through (treasury and factory codes
+  overlap with different meanings), and the whole deploy is rolled back, so no
+  org is recorded.
 
 ## `get_org(org_id) -> OrgRecord`
 
@@ -72,6 +74,7 @@ struct OrgRecord {
 | `AlreadyInitialized` | 2 | `initialize` called twice. |
 | `NotDeployer` | 3 | Reserved for deployer-authorization failures. |
 | `OrgNotFound` | 4 | Requested org id does not exist. |
+| `TreasuryInitFailed` | 5 | The new treasury's `initialize` failed during `deploy_treasury`; the treasury's own code is not passed through. |
 
 The discriminants here differ from the treasury's — the factory's
 `NotInitialized` is 1 and `AlreadyInitialized` is 2, the reverse of the
