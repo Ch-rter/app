@@ -21,10 +21,31 @@ export class FactoryCallError extends Error {
   }
 }
 
-/** Outcome of `deploy_treasury`: the confirmed tx hash plus the new treasury address. */
+/**
+ * Outcome of `deploy_treasury`: the confirmed tx hash, the org id the contract
+ * returns, and the new treasury address (read back from the org record).
+ */
 export interface DeployTreasuryResult {
   hash: string;
+  orgId: number;
   treasuryAddress: string;
+}
+
+/** How long to wait before retrying the post-deploy `get_org` read. */
+const ORG_READ_RETRY_DELAY_MS = 2_000;
+
+/**
+ * Reads the org record written by a just-confirmed deploy. Testnet RPC can
+ * simulate against a snapshot that predates the write for a ledger or two, so
+ * a first-try `OrgNotFound` is retried once before giving up.
+ */
+async function readDeployedOrg(factoryId: string, orgId: number): Promise<OrgRecord> {
+  try {
+    return await getOrg(factoryId, orgId);
+  } catch {
+    await new Promise((resolve) => setTimeout(resolve, ORG_READ_RETRY_DELAY_MS));
+    return getOrg(factoryId, orgId);
+  }
 }
 
 /**
@@ -72,13 +93,17 @@ export async function deployTreasury(
   token: string,
   signXdr: SignXdr,
 ): Promise<DeployTreasuryResult> {
+  let hash: string;
+  let orgId: number;
   try {
+    // Contract signature: deploy_treasury(name, admin, approvers, threshold, token) -> u32.
+    // The TS parameter order above differs; the XDR args must follow the contract.
     const result = await writeContract(
       factoryId,
       'deploy_treasury',
       [
-        addressArg(admin),
         stringArg(name),
+        addressArg(admin),
         addressVecArg(approvers),
         u32Arg(threshold),
         addressArg(token),
@@ -86,16 +111,27 @@ export async function deployTreasury(
       admin,
       signXdr,
     );
-    const treasuryAddress = result.returnValue;
-    if (typeof treasuryAddress !== 'string') {
-      throw new Error('deploy_treasury did not return a treasury address');
+    if (typeof result.returnValue !== 'number') {
+      throw new Error('deploy_treasury did not return an org id');
     }
-    return { hash: result.hash, treasuryAddress };
+    hash = result.hash;
+    orgId = result.returnValue;
   } catch (error) {
     if (error instanceof ContractError) {
       throw new FactoryCallError(error.code);
     }
     throw error;
+  }
+
+  // The deploy is already confirmed here, so a failed read-back must not be
+  // reported as a contract rejection of the deploy itself.
+  try {
+    const org = await readDeployedOrg(factoryId, orgId);
+    return { hash, orgId, treasuryAddress: org.treasury };
+  } catch {
+    throw new Error(
+      `Organization #${orgId} was created (tx ${hash}), but its treasury address could not be loaded yet. Refresh to find it in the directory.`,
+    );
   }
 }
 

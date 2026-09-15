@@ -70,18 +70,25 @@ factory.deployTreasury(
 `initialize` registers the treasury wasm the factory deploys from; it is an
 admin-only, run-once setup call, surfaced here for tooling.
 
-`deployTreasury` deploys a per-org treasury and returns both the transaction
-hash and the new treasury address:
+`deployTreasury` deploys a per-org treasury. The contract's `deploy_treasury`
+returns only the new org id (`u32`); once the transaction confirms, the SDK reads
+that org record back with `get_org` to get the treasury address, and returns all
+three:
 
 ```ts
 interface DeployTreasuryResult {
   hash: string;
+  orgId: number;
   treasuryAddress: string;
 }
 ```
 
-Note the argument order: the caller passes `admin` and the SDK uses it as the
-account that authorizes and pays. This is the call the new-org form makes.
+Note the argument order: the SDK function takes `admin` first, but the contract
+signature is `deploy_treasury(name, admin, approvers, threshold, token)` and the
+SDK encodes the call in that contract order. `admin` is also the account that
+authorizes and pays. Because the SDK signs only the transaction envelope, the
+call succeeds only when `admin` is the factory's stored deployer (both must
+authorize). This is the call the new-org form makes.
 Because the treasury's own `initialize` runs as a sub-call that requires the
 admin's authorization, the wallet is asked to sign twice — see [Getting
 Started](../for-organization-admins/getting-started.md).
