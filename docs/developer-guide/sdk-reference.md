@@ -162,14 +162,6 @@ Both wrap the lower-level `ContractError` thrown by the RPC layer. The numeric
 `code` is the contract's `#[contracterror]` discriminant, parsed from Soroban's
 `Error(Contract, #N)` message.
 
-> **Known drift.** The SDK's own `TreasuryError` / `FactoryError` enums in
-> `packages/sdk/src/types.ts` do not currently line up one-for-one with the
-> contract's `errors.rs`. When you need the authoritative code-to-meaning
-> mapping, use the contract source and the tables on the
-> [treasury](../smart-contracts/treasury.md) and
-> [factory](../smart-contracts/factory.md) pages, not the SDK enum. This is a
-> tracked bug, not a documentation gap.
-
 ## Reads for display come from the indexer, not the SDK
 
 The SDK's view functions read live contract state by simulation. The web app

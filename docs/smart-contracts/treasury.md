@@ -183,10 +183,6 @@ The treasury error enum, with its on-chain discriminants:
 | `NotRequester` | 10 | Cancel attempted by someone other than the requester. |
 | `InvalidAmount` | 11 | Non-positive amount/cap, missing category, or cap below spent. |
 
-Note that the SDK's `TreasuryError` enum in `packages/sdk/src/types.ts` does not
-currently match this list one-for-one. When you need the authoritative mapping,
-use `errors.rs` and this table, not the SDK enum.
-
 ## Events
 
 The treasury emits an event on every state change. The indexer reads these:
