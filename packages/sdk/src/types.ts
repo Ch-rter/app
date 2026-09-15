@@ -95,6 +95,8 @@ export enum FactoryError {
   AlreadyInitialized = 2,
   NotDeployer = 3,
   OrgNotFound = 4,
+  /** Wraps any failure of the new treasury's `initialize`; treasury codes never surface as factory codes. */
+  TreasuryInitFailed = 5,
 }
 
 const TREASURY_ERROR_MESSAGES: Readonly<Record<TreasuryError, string>> = {
@@ -121,6 +123,9 @@ const FACTORY_ERROR_MESSAGES: Readonly<Record<FactoryError, string>> = {
   [FactoryError.AlreadyInitialized]: 'The factory has already been initialized.',
   [FactoryError.NotDeployer]: 'You do not have permission to deploy a treasury.',
   [FactoryError.OrgNotFound]: 'That organization could not be found.',
+  // The contract reverts the whole deploy, so neither the org nor the treasury exists.
+  [FactoryError.TreasuryInitFailed]:
+    'The treasury for this organization could not be set up, so no organization was created.',
 };
 
 const GENERIC_CONTRACT_ERROR = 'The contract rejected this action. Please review your input and try again.';
